@@ -40,6 +40,14 @@ export const MealsList = () => {
   if (isLoading && meals.length === 0) return <p>Loading meals...</p>;
   if (isError) return <p>Error: {error.message}</p>;
 
+  if (!isLoading && meals.length === 0) {
+    return (
+      <div style={{ textAlign: "center", padding: "2rem", color: "#777" }}>
+        <p>No meals</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: "2rem" }}>
       <div
