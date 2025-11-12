@@ -16,7 +16,6 @@ export const MealsList = () => {
     error,
   } = useMeals();
 
-  // ✅ Upewniamy się, że TS rozpoznaje strukturę `data`
   const meals =
     (data as InfiniteData<MealsResponse> | undefined)?.pages.flatMap(
       (page: MealsResponse) => page.data
@@ -38,8 +37,8 @@ export const MealsList = () => {
     [fetchNextPage, hasNextPage, isFetchingNextPage]
   );
 
-  if (isLoading && meals.length === 0) return <p>Ładowanie posiłków...</p>;
-  if (isError) return <p>Błąd: {error.message}</p>;
+  if (isLoading && meals.length === 0) return <p>Loading meals...</p>;
+  if (isError) return <p>Error: {error.message}</p>;
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -56,6 +55,7 @@ export const MealsList = () => {
           return (
             <div key={meal.id} ref={isLast ? lastMealRef : null}>
               <Meal
+                meal_id={meal.meal_id}
                 meal_type={meal.meal_type}
                 name={meal.name}
                 image={meal.image?.url || null}
@@ -67,7 +67,7 @@ export const MealsList = () => {
 
       {isFetchingNextPage && (
         <p style={{ textAlign: "center", marginTop: "1rem" }}>
-          Ładowanie więcej...
+          Loading more...
         </p>
       )}
     </div>

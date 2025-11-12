@@ -1,12 +1,25 @@
 import React from "react";
+import { useHideMeal } from "../hooks/useHideMeal";
 
 interface MealProps {
+  meal_id: number;
   meal_type: string | null;
   name: string | null;
   image: string | null;
 }
 
-export const Meal: React.FC<MealProps> = ({ meal_type, name, image }) => {
+export const Meal: React.FC<MealProps> = ({
+  meal_id,
+  meal_type,
+  name,
+  image,
+}) => {
+  const hideMealMutation = useHideMeal();
+
+  const handleHideClick = () => {
+    hideMealMutation.mutate({ meal_id, hidden: true });
+  };
+
   return (
     <div
       className="meal-card"
@@ -20,7 +33,6 @@ export const Meal: React.FC<MealProps> = ({ meal_type, name, image }) => {
         backgroundColor: "#f0f0f0",
       }}
     >
-      {/* Zdjęcie jako tło */}
       {image && (
         <img
           src={image}
@@ -36,7 +48,6 @@ export const Meal: React.FC<MealProps> = ({ meal_type, name, image }) => {
         />
       )}
 
-      {/* meal_type na górze */}
       {meal_type && (
         <p
           style={{
@@ -51,20 +62,44 @@ export const Meal: React.FC<MealProps> = ({ meal_type, name, image }) => {
             borderRadius: "6px",
             textTransform: "uppercase",
             letterSpacing: "0.5px",
+            margin: 0,
           }}
         >
           {meal_type}
         </p>
       )}
 
-      {/* Biały overlay na dole */}
+      <button
+        onClick={handleHideClick}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "12px",
+          width: "28px",
+          height: "28px",
+          borderRadius: "50%",
+          border: "none",
+          backgroundColor: "rgba(0,0,0,0.6)",
+          color: "#fff",
+          fontWeight: "bold",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          lineHeight: 1,
+          padding: 0,
+        }}
+      >
+        x
+      </button>
+
       <div
         style={{
           position: "absolute",
           bottom: 0,
           left: 0,
           width: "100%",
-          height: "33%", // 1/3 wysokości
+          height: "33%",
           background: "rgba(255,255,255,0.9)",
           display: "flex",
           alignItems: "center",

@@ -13,3 +13,13 @@ export const fetchMeals = async (
   );
   return response.data;
 };
+
+export const hideMeal = async (meal_id: number, hidden = true) => {
+  const response = await axios.patch(
+    `http://localhost:3000/meals/${meal_id}/hide`,
+    {
+      hidden,
+    }
+  );
+  return response.data;
+};
