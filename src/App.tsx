@@ -1,6 +1,6 @@
 import "./App.css";
 import { MealsList } from "./components/MealsList";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 function App() {
