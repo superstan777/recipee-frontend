@@ -49,7 +49,7 @@ export const MealsList = () => {
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div>
       <div
         style={{
           display: "flex",

@@ -1,17 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { hideMeal as apiHideMeal } from "../api/meals";
+import { api } from "../api/axios";
 
 interface HideMealParams {
   meal_id: number;
   hidden?: boolean;
 }
 
+const hideMeal = async (meal_id: number, hidden = true) => {
+  const response = await api.patch(`/meals/${meal_id}/hide`, { hidden });
+  return response.data;
+};
+
 export const useHideMeal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ meal_id, hidden = true }: HideMealParams) =>
-      apiHideMeal(meal_id, hidden),
+      hideMeal(meal_id, hidden),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["meals"] });
     },
