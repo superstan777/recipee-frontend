@@ -92,7 +92,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarContent>
       </Sidebar>
 
-      {/* Dialog renderowany tylko raz */}
       <TagDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}

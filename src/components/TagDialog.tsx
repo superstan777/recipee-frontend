@@ -52,7 +52,6 @@ export const TagDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
-        {/* FORM wewnątrz DialogContent, aby zachować paddingi i układ */}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>
@@ -63,7 +62,6 @@ export const TagDialog = ({
               <span className="font-medium text-foreground">
                 {mealTypeName ?? "tego typu posiłku"}
               </span>
-              .
             </DialogDescription>
           </DialogHeader>
 

@@ -37,12 +37,17 @@ export const MealsList = () => {
     [fetchNextPage, hasNextPage, isFetchingNextPage]
   );
 
-  if (isLoading && meals.length === 0) return <p>Loading meals...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  if (isLoading && meals.length === 0)
+    return <p className="text-center py-8 text-gray-500">Loading meals...</p>;
+
+  if (isError)
+    return (
+      <p className="text-center py-8 text-red-500">Error: {error.message}</p>
+    );
 
   if (!isLoading && meals.length === 0) {
     return (
-      <div style={{ textAlign: "center", padding: "2rem", color: "#777" }}>
+      <div className="text-center py-8 text-gray-500">
         <p>No meals</p>
       </div>
     );
@@ -50,14 +55,7 @@ export const MealsList = () => {
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          justifyContent: "center",
-        }}
-      >
+      <div className="flex flex-wrap gap-4 justify-center">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
           return (
@@ -74,9 +72,7 @@ export const MealsList = () => {
       </div>
 
       {isFetchingNextPage && (
-        <p style={{ textAlign: "center", marginTop: "1rem" }}>
-          Loading more...
-        </p>
+        <p className="text-center mt-4 text-gray-500">Loading more...</p>
       )}
     </div>
   );
