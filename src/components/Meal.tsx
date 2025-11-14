@@ -1,5 +1,9 @@
 import React from "react";
-import { useHideMeal } from "../hooks/useHideMeal";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/api/axios";
+import { useHideMeal } from "@/hooks/useHideMeal";
+import { MealTagsHoverCard } from "./MealTagsHoverCard";
+import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface MealProps {
   meal_id: number;
@@ -15,109 +19,64 @@ export const Meal: React.FC<MealProps> = ({
   image,
 }) => {
   const hideMealMutation = useHideMeal();
+  const [tagsOpen, setTagsOpen] = React.useState(false);
 
   const handleHideClick = () => {
     hideMealMutation.mutate({ meal_id, hidden: true });
   };
 
+  const { data: sidebarData } = useQuery({
+    queryKey: ["sidebar"],
+    queryFn: () => api.get("/sidebar").then((r) => r.data),
+  });
+
+  const tagsForMealType = React.useMemo(() => {
+    if (!sidebarData || !meal_type) return [];
+    const mealTypeObj = sidebarData.find((m: any) => m.name === meal_type);
+    return mealTypeObj?.tags ?? [];
+  }, [sidebarData, meal_type]);
+
   return (
-    <div
-      className="meal-card"
-      style={{
-        position: "relative",
-        width: "280px",
-        height: "360px",
-        borderRadius: "16px",
-        overflow: "hidden",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        backgroundColor: "#f0f0f0",
-      }}
-    >
+    <div className="relative w-72 h-[460px] rounded-md overflow-hidden shadow-md bg-gray-100">
+      <div className="absolute top-0 left-0 w-full h-7 bg-white flex items-center px-2 gap-2 z-10">
+        <button
+          onClick={handleHideClick}
+          className="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
+        />
+
+        <HoverCard open={tagsOpen} onOpenChange={setTagsOpen}>
+          <HoverCardTrigger asChild>
+            <button className="w-3 h-3 rounded-full bg-yellow-400 cursor-pointer" />
+          </HoverCardTrigger>
+
+          <MealTagsHoverCard
+            meal_id={meal_id}
+            sidebarTags={tagsForMealType}
+            isOpen={tagsOpen}
+            onClose={() => setTagsOpen(false)}
+          />
+        </HoverCard>
+
+        <button className="w-3 h-3 rounded-full bg-green-500" />
+      </div>
+
       {image && (
         <img
           src={image}
           alt={name || "Meal"}
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            top: 0,
-            left: 0,
-          }}
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
         />
       )}
 
       {meal_type && (
-        <p
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "12px",
-            padding: "4px 8px",
-            background: "rgba(0,0,0,0.6)",
-            color: "#fff",
-            fontSize: "0.85rem",
-            fontWeight: "600",
-            borderRadius: "6px",
-            textTransform: "uppercase",
-            letterSpacing: "0.5px",
-            margin: 0,
-          }}
-        >
+        <p className="absolute top-9 left-3 px-2 py-1 bg-black/60 text-white text-xs font-semibold rounded-md uppercase z-10">
           {meal_type}
         </p>
       )}
 
-      <button
-        onClick={handleHideClick}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "12px",
-          width: "28px",
-          height: "28px",
-          borderRadius: "50%",
-          border: "none",
-          backgroundColor: "rgba(0,0,0,0.6)",
-          color: "#fff",
-          fontWeight: "bold",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          lineHeight: 1,
-          padding: 0,
-        }}
-      >
-        x
-      </button>
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          height: "33%",
-          background: "rgba(255,255,255,0.9)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "1rem",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-white/90 flex items-center justify-center p-4 z-10">
         {name && (
-          <h3
-            style={{
-              color: "#222",
-              fontSize: "1rem",
-              fontWeight: "600",
-              textAlign: "center",
-              margin: 0,
-            }}
-          >
+          <h3 className="text-gray-900 text-base font-semibold text-center">
             {name}
           </h3>
         )}
