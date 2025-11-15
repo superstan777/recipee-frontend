@@ -24,6 +24,7 @@ export const Meal: React.FC<MealProps> = ({
   const handleHideClick = () => {
     hideMealMutation.mutate({ meal_id, hidden: true });
   };
+  console.log(meal_id);
 
   const { data: sidebarData } = useQuery({
     queryKey: ["sidebar"],

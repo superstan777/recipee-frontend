@@ -48,6 +48,8 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
       <div className="flex flex-col gap-2">
         {isLoading ? (
           <div className="text-sm text-gray-500">Ładowanie…</div>
+        ) : sidebarTags.length === 0 ? (
+          <div className="text-sm text-gray-500">Brak tagów</div>
         ) : (
           sidebarTags.map((tag) => (
             <label

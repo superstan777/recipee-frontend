@@ -1,3 +1,6 @@
+"use client";
+
+import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -41,18 +44,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     setDialogOpen(true);
   };
 
+  const isMealTypeActive = (mealTypeId: number) =>
+    selectedMealTypeId === mealTypeId;
+  const isTagActive = (tagId: number) => selectedTagId === tagId;
+
   return (
     <>
       <Sidebar variant="floating" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild>
-                <a href="#">
-                  <div className="flex flex-col gap-0.5 leading-none">
-                    <span className="font-medium">Recipee</span>
-                  </div>
-                </a>
+              <SidebarMenuButton size="lg">
+                <span className="font-medium">Recipee</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -61,60 +64,44 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarMenu className="gap-2">
-              {sidebarData?.map((mealType: SidebarMealType) => {
-                const isMealTypeSelected = mealType.id === selectedMealTypeId;
+              {sidebarData?.map((mealType: SidebarMealType) => (
+                <SidebarMenuItem key={mealType.id}>
+                  <div className="flex items-center justify-between">
+                    <SidebarMenuButton
+                      isActive={isMealTypeActive(mealType.id)}
+                      className="flex-1"
+                      onClick={() => setMealTypeId(mealType.id)}
+                    >
+                      {mealType.name}
+                    </SidebarMenuButton>
 
-                return (
-                  <SidebarMenuItem key={mealType.id}>
-                    <div className="flex items-center justify-between">
-                      <SidebarMenuButton
-                        asChild
-                        className={`flex-1 ${
-                          isMealTypeSelected
-                            ? "rounded px-2 py-1 font-medium text-gray-900"
-                            : "font-medium text-gray-700"
-                        }`}
-                        onClick={() => setMealTypeId(mealType.id)}
-                      >
-                        <a href="#">{mealType.name}</a>
-                      </SidebarMenuButton>
+                    <SidebarMenuButton
+                      onClick={() =>
+                        handleAddTagClick(mealType.id, mealType.name)
+                      }
+                      tooltip="Add new tag"
+                      className="w-auto px-2 shrink-0"
+                    >
+                      <Plus />
+                    </SidebarMenuButton>
+                  </div>
 
-                      <SidebarMenuButton
-                        onClick={() =>
-                          handleAddTagClick(mealType.id, mealType.name)
-                        }
-                        tooltip="Add new tag"
-                        className="w-auto px-2 shrink-0"
-                      >
-                        <Plus />
-                      </SidebarMenuButton>
-                    </div>
-
-                    {mealType.tags?.length ? (
-                      <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                        {mealType.tags.map((tag) => {
-                          const isTagSelected = tag.id === selectedTagId;
-                          return (
-                            <SidebarMenuSubItem key={tag.id}>
-                              <SidebarMenuSubButton
-                                asChild
-                                className={`${
-                                  isTagSelected
-                                    ? "rounded px-2 py-1 font-medium text-gray-900"
-                                    : "text-gray-700"
-                                }`}
-                                onClick={() => setTagId(tag.id)}
-                              >
-                                <a href="#">{tag.tag_name}</a>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          );
-                        })}
-                      </SidebarMenuSub>
-                    ) : null}
-                  </SidebarMenuItem>
-                );
-              })}
+                  {mealType.tags?.length ? (
+                    <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
+                      {mealType.tags.map((tag) => (
+                        <SidebarMenuSubItem key={tag.id}>
+                          <SidebarMenuSubButton
+                            isActive={isTagActive(tag.id)}
+                            onClick={() => setTagId(tag.id)}
+                          >
+                            {tag.tag_name}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  ) : null}
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>

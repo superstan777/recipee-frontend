@@ -1,26 +1,41 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  type QueryFunctionContext,
+} from "@tanstack/react-query";
 import type { MealsResponse } from "../types/meals";
 import { api } from "../api/axios";
 
-const fetchMeals = async (cursor: number | null): Promise<MealsResponse> => {
-  const params: Record<string, any> = { limit: 30 };
-  if (cursor) params.cursor = cursor;
+interface MealsFilters {
+  mealTypeId?: number | null;
+  tagId?: number | null;
+}
+
+const fetchMeals = async (
+  cursor: number | null,
+  filters: MealsFilters = {}
+): Promise<MealsResponse> => {
+  const params: Record<string, any> = { ...filters, limit: 30 };
+  if (cursor !== null) params.cursor = cursor;
 
   const response = await api.get<MealsResponse>("/meals", { params });
   return response.data;
 };
 
-export const useMeals = () => {
+export const useMeals = (filters: MealsFilters = {}) => {
   return useInfiniteQuery<
     MealsResponse,
     Error,
     MealsResponse,
-    ["meals"],
+    ["meals", MealsFilters],
     number | null
   >({
-    queryKey: ["meals"],
-    queryFn: ({ pageParam = null }) => fetchMeals(pageParam),
+    queryKey: ["meals", filters],
+    queryFn: ({
+      pageParam,
+    }: QueryFunctionContext<["meals", MealsFilters], number | null>) =>
+      fetchMeals(pageParam ?? null, filters),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    staleTime: Infinity,
   });
 };

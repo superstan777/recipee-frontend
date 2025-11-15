@@ -3,9 +3,16 @@ import { useMeals } from "../hooks/useMeals";
 import { Meal } from "./Meal";
 import type { MealData, MealsResponse } from "../types/meals";
 import type { InfiniteData } from "@tanstack/react-query";
+import { useFiltersStore } from "../store/filters";
 
 export const MealsList = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const selectedMealTypeId = useFiltersStore(
+    (state) => state.selectedMealTypeId
+  );
+  const selectedTagId = useFiltersStore((state) => state.selectedTagId);
+
   const {
     data,
     fetchNextPage,
@@ -14,7 +21,10 @@ export const MealsList = () => {
     isLoading,
     isError,
     error,
-  } = useMeals();
+  } = useMeals({
+    mealTypeId: selectedMealTypeId,
+    tagId: selectedTagId,
+  });
 
   const meals =
     (data as InfiniteData<MealsResponse> | undefined)?.pages.flatMap(
@@ -61,7 +71,7 @@ export const MealsList = () => {
           return (
             <div key={meal.id} ref={isLast ? lastMealRef : null}>
               <Meal
-                meal_id={meal.meal_id}
+                meal_id={meal.id}
                 meal_type={meal.meal_type}
                 name={meal.name}
                 image={meal.image?.url || null}
