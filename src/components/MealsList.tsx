@@ -48,24 +48,30 @@ export const MealsList = () => {
   );
 
   if (isLoading && meals.length === 0)
-    return <p className="text-center py-8 text-gray-500">Loading meals...</p>;
+    return (
+      <p className="flex justify-center items-center h-screen text-gray-500">
+        Ładowanie posiłków...
+      </p>
+    );
 
   if (isError)
     return (
-      <p className="text-center py-8 text-red-500">Error: {error.message}</p>
+      <p className="flex justify-center items-center h-screen text-red-500">
+        Błąd: {error.message}
+      </p>
     );
 
   if (!isLoading && meals.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        <p>No meals</p>
+      <div className="flex justify-center items-center h-screen text-gray-500">
+        <p>Brak posiłków</p>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
           return (
@@ -82,7 +88,9 @@ export const MealsList = () => {
       </div>
 
       {isFetchingNextPage && (
-        <p className="text-center mt-4 text-gray-500">Loading more...</p>
+        <p className="flex justify-center mt-4 text-gray-500">
+          Ładowanie kolejnych posiłków...
+        </p>
       )}
     </div>
   );

@@ -54,11 +54,9 @@ export const TagDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit} className="grid gap-4">
           <DialogHeader>
-            <DialogTitle>
-              Dodaj nowy tag {mealTypeName ? `do ${mealTypeName}` : ""}
-            </DialogTitle>
+            <DialogTitle>Dodaj nową kategorię</DialogTitle>
             <DialogDescription>
-              Wpisz nazwę nowego tagu przypisanego do{" "}
+              Wpisz nazwę nowej kategorii przypisanej do{" "}
               <span className="font-medium text-foreground">
                 {mealTypeName ?? "tego typu posiłku"}
               </span>
@@ -66,7 +64,7 @@ export const TagDialog = ({
           </DialogHeader>
 
           <div className="grid gap-3">
-            <Label htmlFor="tag-name">Nazwa tagu</Label>
+            <Label htmlFor="tag-name">Nazwa kategorii</Label>
             <Input
               id="tag-name"
               name="tag_name"
