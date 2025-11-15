@@ -24,7 +24,6 @@ export const Meal: React.FC<MealProps> = ({
   const handleHideClick = () => {
     hideMealMutation.mutate({ meal_id, hidden: true });
   };
-  console.log(meal_id);
 
   const { data: sidebarData } = useQuery({
     queryKey: ["sidebar"],
@@ -38,7 +37,7 @@ export const Meal: React.FC<MealProps> = ({
   }, [sidebarData, meal_type]);
 
   return (
-    <div className="relative w-72 h-[460px] rounded-md overflow-hidden shadow-md bg-gray-100">
+    <div className="relative w-full aspect-3/5 rounded-md overflow-hidden shadow-md bg-gray-100">
       <div className="absolute top-0 left-0 w-full h-7 bg-white flex items-center px-2 gap-2 z-10">
         <button
           onClick={handleHideClick}

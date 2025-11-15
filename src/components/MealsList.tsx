@@ -65,7 +65,7 @@ export const MealsList = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-4 justify-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 ">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
           return (

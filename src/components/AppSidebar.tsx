@@ -49,70 +49,67 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isTagActive = (tagId: number) => selectedTagId === tagId;
 
   return (
-    <>
-      <Sidebar variant="floating" {...props}>
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg">
-                <span className="font-medium">Recipee</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+    <Sidebar variant="floating" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg">
+              <span className="font-medium">Recipee</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu className="gap-2">
+            {sidebarData?.map((mealType: SidebarMealType) => (
+              <SidebarMenuItem key={mealType.id}>
+                <div className="flex items-center justify-between">
+                  <SidebarMenuButton
+                    isActive={isMealTypeActive(mealType.id)}
+                    className="flex-1"
+                    onClick={() => setMealTypeId(mealType.id)}
+                  >
+                    {mealType.name}
+                  </SidebarMenuButton>
+
+                  <SidebarMenuButton
+                    onClick={() =>
+                      handleAddTagClick(mealType.id, mealType.name)
+                    }
+                    tooltip="Add new tag"
+                    className="w-auto px-2 shrink-0"
+                  >
+                    <Plus />
+                  </SidebarMenuButton>
+                </div>
+
+                {mealType.tags?.length ? (
+                  <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
+                    {mealType.tags.map((tag) => (
+                      <SidebarMenuSubItem key={tag.id}>
+                        <SidebarMenuSubButton
+                          isActive={isTagActive(tag.id)}
+                          onClick={() => setTagId(tag.id)}
+                        >
+                          {tag.tag_name}
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                ) : null}
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
-        </SidebarHeader>
-
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarMenu className="gap-2">
-              {sidebarData?.map((mealType: SidebarMealType) => (
-                <SidebarMenuItem key={mealType.id}>
-                  <div className="flex items-center justify-between">
-                    <SidebarMenuButton
-                      isActive={isMealTypeActive(mealType.id)}
-                      className="flex-1"
-                      onClick={() => setMealTypeId(mealType.id)}
-                    >
-                      {mealType.name}
-                    </SidebarMenuButton>
-
-                    <SidebarMenuButton
-                      onClick={() =>
-                        handleAddTagClick(mealType.id, mealType.name)
-                      }
-                      tooltip="Add new tag"
-                      className="w-auto px-2 shrink-0"
-                    >
-                      <Plus />
-                    </SidebarMenuButton>
-                  </div>
-
-                  {mealType.tags?.length ? (
-                    <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                      {mealType.tags.map((tag) => (
-                        <SidebarMenuSubItem key={tag.id}>
-                          <SidebarMenuSubButton
-                            isActive={isTagActive(tag.id)}
-                            onClick={() => setTagId(tag.id)}
-                          >
-                            {tag.tag_name}
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  ) : null}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-
+        </SidebarGroup>
+      </SidebarContent>
       <TagDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         mealTypeId={dialogMealTypeId}
         mealTypeName={dialogMealTypeName}
       />
-    </>
+    </Sidebar>
   );
 }
