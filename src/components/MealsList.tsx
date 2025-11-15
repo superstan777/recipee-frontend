@@ -1,17 +1,29 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { useMeals } from "../hooks/useMeals";
 import { Meal } from "./Meal";
 import type { MealData, MealsResponse } from "../types/meals";
 import type { InfiniteData } from "@tanstack/react-query";
 import { useFiltersStore } from "../store/filters";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const MealsList = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const queryClient = useQueryClient();
 
   const selectedMealTypeId = useFiltersStore(
     (state) => state.selectedMealTypeId
   );
   const selectedTagId = useFiltersStore((state) => state.selectedTagId);
+
+  // HOTFIX
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["meals"],
+      exact: false,
+    });
+
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [selectedMealTypeId, selectedTagId, queryClient]);
 
   const {
     data,
