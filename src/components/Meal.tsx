@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/axios";
 import { useHideMeal } from "@/hooks/useHideMeal";
+import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 
@@ -10,6 +11,7 @@ interface MealProps {
   meal_type: string | null;
   name: string | null;
   image: string | null;
+  new: boolean;
 }
 
 export const Meal: React.FC<MealProps> = ({
@@ -17,6 +19,7 @@ export const Meal: React.FC<MealProps> = ({
   meal_type,
   name,
   image,
+  new: isNew,
 }) => {
   const hideMealMutation = useHideMeal();
   const [tagsOpen, setTagsOpen] = React.useState(false);
@@ -24,6 +27,8 @@ export const Meal: React.FC<MealProps> = ({
   const handleHideClick = () => {
     hideMealMutation.mutate({ meal_id, hidden: true });
   };
+
+  const markRef = useMarkAsSeen(meal_id, isNew);
 
   const { data: sidebarData } = useQuery({
     queryKey: ["sidebar"],
@@ -37,7 +42,10 @@ export const Meal: React.FC<MealProps> = ({
   }, [sidebarData, meal_type]);
 
   return (
-    <div className="relative w-full aspect-3/5 rounded-md overflow-hidden shadow-md bg-gray-100">
+    <div
+      ref={markRef}
+      className="relative w-full aspect-3/5 rounded-md overflow-hidden shadow-md bg-gray-100"
+    >
       <div className="absolute top-0 left-0 w-full h-7 bg-white flex items-center px-2 gap-2 z-10">
         <button
           onClick={handleHideClick}
@@ -58,6 +66,12 @@ export const Meal: React.FC<MealProps> = ({
         </HoverCard>
 
         <button className="w-3 h-3 rounded-full bg-green-500" />
+
+        {isNew && (
+          <span className="ml-auto px-2 py-0.5 text-xs font-semibold bg-blue-600 text-white rounded">
+            NEW
+          </span>
+        )}
       </div>
 
       {image && (

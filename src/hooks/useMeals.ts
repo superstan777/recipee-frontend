@@ -36,6 +36,5 @@ export const useMeals = (filters: MealsFilters = {}) => {
       fetchMeals(pageParam ?? null, filters),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    staleTime: Infinity,
   });
 };
