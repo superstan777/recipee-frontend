@@ -71,7 +71,7 @@ export const MealsList = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
           return (
