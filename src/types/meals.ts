@@ -1,11 +1,12 @@
 export interface MealData {
+  pagination_id: number;
   id: number;
-  meal_id: number;
-  name: string | null;
+  name: string;
   meal_type: string | null;
   hidden: boolean;
   done: boolean;
   rating: string | null;
+  new: boolean;
   created_at: string;
   image: {
     url: string | null;
