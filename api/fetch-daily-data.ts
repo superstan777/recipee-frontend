@@ -94,7 +94,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    await api.post("/add-meals", meals, {
+    await api.post("meals/add-meals", meals, {
       headers: { "Content-Type": "application/json" },
     });
 
