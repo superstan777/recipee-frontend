@@ -22,7 +22,6 @@ interface ImageData {
   file: string;
 }
 
-// Funkcja pobierająca dane z zewnętrznego API
 async function fetchMealsFromApi(): Promise<FetchedMeal[]> {
   const today = new Date().toISOString().split("T")[0];
   const url = `https://ntfy.pl/wp-json/dccore/v1/menu-planner?date=${today}&expansions__in=serving_id%2Cserving.multimedia_collection%2Cmeal_type_id%2Cmeal_id%2Cmeal.category_id%2Csize_id&brand_id=11&package_id=20`;
@@ -53,6 +52,7 @@ async function fetchMealsFromApi(): Promise<FetchedMeal[]> {
         const verticalImage = images.find(
           (img) => img.type === "MULTIMEDIA_VERTICAL"
         );
+
         const mealTypeName = data.includes.meal_types?.find(
           (mt: any) => mt.id === item.meal_type_id
         )?.name;
@@ -71,8 +71,19 @@ async function fetchMealsFromApi(): Promise<FetchedMeal[]> {
   return results;
 }
 
-// Handler API dla Vercel
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const cronSecret = process.env.CRON_SECRET;
+  const header = req.headers["authorization"];
+
+  if (!cronSecret) {
+    console.error("CRON_SECRET is missing in environment variables!");
+    return res.status(500).json({ error: "CRON_SECRET not configured" });
+  }
+
+  if (header !== `Bearer ${cronSecret}`) {
+    return res.status(401).end("Unauthorized");
+  }
+
   try {
     const meals = await fetchMealsFromApi();
 
