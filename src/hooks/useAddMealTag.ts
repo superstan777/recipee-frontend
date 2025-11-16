@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../api/axios";
+import { api } from "../lib/api";
 
 export interface AddMealTagParams {
   meal_id: number;

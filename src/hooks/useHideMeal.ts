@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../api/axios";
+import { api } from "../lib/api";
 
 interface HideMealParams {
   meal_id: number;

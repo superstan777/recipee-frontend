@@ -3,7 +3,7 @@ import {
   type QueryFunctionContext,
 } from "@tanstack/react-query";
 import type { MealsResponse } from "../types/meals";
-import { api } from "../api/axios";
+import { api } from "../lib/api";
 
 interface MealsFilters {
   mealTypeId?: number | null;

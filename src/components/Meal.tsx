@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/api/axios";
+import { api } from "@/lib/api";
 import { useHideMeal } from "@/hooks/useHideMeal";
 import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";

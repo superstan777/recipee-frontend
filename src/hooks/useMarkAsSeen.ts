@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { api } from "@/api/axios";
+import { api } from "@/lib/api";
 
 const markAsSeen = async (mealId: number) => {
   return api.patch(`/meals/${mealId}/seen`).then((r) => r.data);

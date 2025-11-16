@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import { api } from "@/api/axios";
+import { api } from "@/lib/api";
 
 export interface MealTag {
   id: number;
