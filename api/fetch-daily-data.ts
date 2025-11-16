@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const api = axios.create({
   baseURL: process.env.API_BASE_URL,
@@ -21,6 +22,7 @@ interface ImageData {
   file: string;
 }
 
+// Funkcja pobierająca dane z zewnętrznego API
 async function fetchMealsFromApi(): Promise<FetchedMeal[]> {
   const today = new Date().toISOString().split("T")[0];
   const url = `https://ntfy.pl/wp-json/dccore/v1/menu-planner?date=${today}&expansions__in=serving_id%2Cserving.multimedia_collection%2Cmeal_type_id%2Cmeal_id%2Cmeal.category_id%2Csize_id&brand_id=11&package_id=20`;
@@ -57,7 +59,7 @@ async function fetchMealsFromApi(): Promise<FetchedMeal[]> {
 
         return {
           meal_id: item.meal_id,
-          meal_type_name: mealTypeName!,
+          meal_type_name: mealTypeName || null,
           name: meal?.name || null,
           image: verticalImage
             ? `https://dccore.ntfy.pl/upload/multimedia/${verticalImage.file}`
@@ -69,28 +71,32 @@ async function fetchMealsFromApi(): Promise<FetchedMeal[]> {
   return results;
 }
 
-export default async function handler(req: any, res: any) {
+// Handler API dla Vercel
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const meals = await fetchMealsFromApi();
 
     if (!meals.length) {
-      return res
-        .status(200)
-        .json({ success: true, message: "Brak nowych danych do zapisania." });
+      return res.status(200).json({
+        success: true,
+        message: "Brak nowych danych do zapisania.",
+      });
     }
 
     await api.post("/add-meals", meals, {
       headers: { "Content-Type": "application/json" },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Dane pobrane i wysłane do backendu pomyślnie.",
+      mealsCount: meals.length,
     });
   } catch (err: any) {
     console.error("Błąd w fetch-daily-data:", err.message || err);
-    res
-      .status(500)
-      .json({ success: false, error: err.message || "Błąd serwera" });
+    return res.status(500).json({
+      success: false,
+      error: err.message || "Błąd serwera",
+    });
   }
 }
