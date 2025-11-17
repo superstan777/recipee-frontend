@@ -32,6 +32,7 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
       setSelectedTags(mealTags.map((mt) => mt.tag.id));
     }
   }, [mealTags]);
+  console.log(mealTags);
 
   const handleCheckboxChange = (tagId: number) => {
     if (selectedTags.includes(tagId)) {

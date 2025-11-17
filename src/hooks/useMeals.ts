@@ -2,7 +2,7 @@ import {
   useInfiniteQuery,
   type QueryFunctionContext,
 } from "@tanstack/react-query";
-import type { MealsResponse } from "../types/meals";
+import type { MealsPage } from "../types/meals";
 import { api } from "../lib/api";
 
 interface MealsFilters {
@@ -13,19 +13,20 @@ interface MealsFilters {
 const fetchMeals = async (
   cursor: number | null,
   filters: MealsFilters = {}
-): Promise<MealsResponse> => {
+): Promise<MealsPage> => {
   const params: Record<string, any> = { ...filters, limit: 30 };
   if (cursor !== null) params.cursor = cursor;
 
-  const response = await api.get<MealsResponse>("/meals", { params });
+  const response = await api.get<MealsPage>("/meals", { params });
   return response.data;
 };
 
+// Hook zwracający MealsInfiniteResponse (react-query zrobi opakowanie)
 export const useMeals = (filters: MealsFilters = {}) => {
   return useInfiniteQuery<
-    MealsResponse,
+    MealsPage,
     Error,
-    MealsResponse,
+    MealsPage,
     ["meals", MealsFilters],
     number | null
   >({

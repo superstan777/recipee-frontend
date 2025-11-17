@@ -1,7 +1,7 @@
 import { useRef, useCallback, useEffect } from "react";
 import { useMeals } from "../hooks/useMeals";
 import { Meal } from "./Meal";
-import type { MealData, MealsResponse } from "../types/meals";
+import type { MealData, MealsPage } from "../types/meals";
 import type { InfiniteData } from "@tanstack/react-query";
 import { useFiltersStore } from "../store/filters";
 import { useQueryClient } from "@tanstack/react-query";
@@ -39,8 +39,8 @@ export const MealsList = () => {
   });
 
   const meals =
-    (data as InfiniteData<MealsResponse> | undefined)?.pages.flatMap(
-      (page: MealsResponse) => page.data
+    (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
+      (page: MealsPage) => page.data
     ) ?? [];
 
   const lastMealRef = useCallback(
@@ -58,6 +58,7 @@ export const MealsList = () => {
     },
     [fetchNextPage, hasNextPage, isFetchingNextPage]
   );
+  console.log(data);
 
   if (isLoading && meals.length === 0)
     return (
