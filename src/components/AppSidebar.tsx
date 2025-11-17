@@ -28,12 +28,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     null
   );
 
-  const selectedMealTypeId = useFiltersStore(
-    (state) => state.selectedMealTypeId
-  );
-  const selectedTagId = useFiltersStore((state) => state.selectedTagId);
-  const setMealTypeId = useFiltersStore((state) => state.setMealTypeId);
-  const setTagId = useFiltersStore((state) => state.setTagId);
+  const { selectedMealTypeId, selectedTagId, setMealTypeId, setTagId } =
+    useFiltersStore();
 
   if (isLoading) return <p>Loading sidebar...</p>;
   if (isError) return <p>Error loading sidebar</p>;
