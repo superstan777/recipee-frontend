@@ -49,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isTagActive = (tagId: number) => selectedTagId === tagId;
 
   return (
-    <Sidebar variant="floating" {...props}>
+    <Sidebar variant="floating" {...props} className="p-4 pr-0">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

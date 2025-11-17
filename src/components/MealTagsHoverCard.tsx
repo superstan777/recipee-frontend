@@ -49,7 +49,7 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
         {isLoading ? (
           <div className="text-sm text-gray-500">Ładowanie…</div>
         ) : sidebarTags.length === 0 ? (
-          <div className="text-sm text-gray-500">Brak tagów</div>
+          <div className="text-sm text-gray-500">Brak tagów do dodania</div>
         ) : (
           sidebarTags.map((tag) => (
             <label
