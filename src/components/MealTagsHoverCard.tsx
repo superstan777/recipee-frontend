@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { HoverCardContent } from "@/components/ui/hover-card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAddMealTag } from "@/hooks/useAddMealTag";
@@ -21,27 +21,40 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
   const addMealTag = useAddMealTag();
   const removeMealTag = useRemoveMealTag();
 
-  const [selectedTags, setSelectedTags] = React.useState<number[]>([]);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) refetch();
   }, [isOpen, refetch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (mealTags) {
       setSelectedTags(mealTags.map((mt) => mt.tag.id));
     }
   }, [mealTags]);
-  console.log(mealTags);
 
   const handleCheckboxChange = (tagId: number) => {
-    if (selectedTags.includes(tagId)) {
-      removeMealTag.mutate({ meal_id, tag_id: tagId });
-      setSelectedTags((prev) => prev.filter((id) => id !== tagId));
-    } else {
-      addMealTag.mutate({ meal_id, tag_id: tagId });
-      setSelectedTags((prev) => [...prev, tagId]);
-    }
+    const isSelected = selectedTags.includes(tagId);
+
+    setSelectedTags((prev) =>
+      isSelected ? prev.filter((id) => id !== tagId) : [...prev, tagId]
+    );
+
+    const mutation = isSelected ? removeMealTag : addMealTag;
+
+    mutation.mutate(
+      { meal_id, tag_id: tagId },
+      {
+        onError: () => {
+          setSelectedTags((prev) =>
+            isSelected ? [...prev, tagId] : prev.filter((id) => id !== tagId)
+          );
+        },
+        onSettled: () => {
+          refetch();
+        },
+      }
+    );
   };
 
   return (
