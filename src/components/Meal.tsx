@@ -84,12 +84,12 @@ export const Meal: React.FC<MealProps> = ({
         )}
 
         <div className="flex gap-2">
-          {/* <button
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer"
+          <button
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer hidden"
             aria-label="Rate meal"
           >
             <Star size={20} color="black" />
-          </button> */}
+          </button>
 
           <HoverCard open={tagsOpen} onOpenChange={setTagsOpen}>
             <HoverCardTrigger asChild>
