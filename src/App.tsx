@@ -1,9 +1,15 @@
+// App.tsx
 import "./App.css";
 import { MealsList } from "./components/MealsList";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { MobileSidebarMenu } from "./components/MobileMenu";
+import React from "react";
+import { useIsMobile } from "./hooks/use-mobile";
 
 function App() {
+  const isMobile = useIsMobile(); // <- użycie hooka
+
   return (
     <SidebarProvider
       style={
@@ -12,9 +18,11 @@ function App() {
         } as React.CSSProperties
       }
     >
-      <AppSidebar />
+      {!isMobile && <AppSidebar />}
+      {isMobile && <MobileSidebarMenu />}
+
       <SidebarInset>
-        <div className="flex flex-1 flex-col gap-4 py-2 ">
+        <div className="flex flex-1 flex-col">
           <MealsList />
         </div>
       </SidebarInset>
