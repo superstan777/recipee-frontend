@@ -26,43 +26,25 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
   const [open, setOpen] = useState(false);
 
   const { data: mealTags, isLoading, refetch } = useMealTags(meal_id);
+
   const addMealTag = useAddMealTag();
   const removeMealTag = useRemoveMealTag();
 
-  const [selectedTags, setSelectedTags] = useState<number[]>([]);
-
-  // Refetch tags only when hovercard is open
   useEffect(() => {
-    if (open) refetch();
+    if (open) {
+      refetch();
+    }
   }, [open, refetch]);
 
-  // Sync state with backend
-  useEffect(() => {
-    if (mealTags) {
-      setSelectedTags(mealTags.map((mt) => mt.tag.id));
-    }
-  }, [mealTags]);
-
-  const toggleTag = (tagId: number) => {
-    const isSelected = selectedTags.includes(tagId);
-
-    // optimistic update
-    setSelectedTags((prev) =>
-      isSelected ? prev.filter((id) => id !== tagId) : [...prev, tagId]
-    );
-
+  const handleToggleTag = (tagId: number) => {
+    const isSelected = mealTags?.some((mt) => mt.tag.id === tagId);
     const mutation = isSelected ? removeMealTag : addMealTag;
 
     mutation.mutate(
       { meal_id, tag_id: tagId },
       {
-        onError: () => {
-          // rollback on error
-          setSelectedTags((prev) =>
-            isSelected ? [...prev, tagId] : prev.filter((id) => id !== tagId)
-          );
-        },
         onSettled: () => {
+          // zamiast invalidateQueries -> wywołujemy refetch ręcznie
           refetch();
         },
       }
@@ -96,15 +78,17 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
           ) : (
             sidebarTags.map((tag) => {
               const tagId = `meal-tag-${meal_id}-${tag.id}`;
+              const isChecked = mealTags?.some((mt) => mt.tag.id === tag.id);
+
               return (
                 <div
                   key={tag.id}
-                  className="flex items-center space-x-2 text-sm "
+                  className="flex items-center space-x-2 text-sm"
                 >
                   <Checkbox
                     id={tagId}
-                    checked={selectedTags.includes(tag.id)}
-                    onCheckedChange={() => toggleTag(tag.id)}
+                    checked={!!isChecked}
+                    onCheckedChange={() => handleToggleTag(tag.id)}
                     className="cursor-pointer"
                   />
                   <Label htmlFor={tagId} className="cursor-pointer">
