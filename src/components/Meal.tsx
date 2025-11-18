@@ -26,9 +26,10 @@ export const Meal: React.FC<MealProps> = ({
   rating,
 }) => {
   const [isNewLocal, setIsNewLocal] = useState(isNew);
+  const [animateNewIcon, setAnimateNewIcon] = useState(false);
 
   const ref = useMarkAsSeen(meal_id, isNewLocal, () => {
-    setIsNewLocal(false);
+    setAnimateNewIcon(true);
   });
 
   return (
@@ -39,8 +40,15 @@ export const Meal: React.FC<MealProps> = ({
       {isNewLocal && (
         <motion.div
           initial={{ opacity: 1, scale: 1 }}
-          animate={{ opacity: 0, scale: 0.5 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          animate={
+            animateNewIcon
+              ? { opacity: 0, scale: 0.5 }
+              : { opacity: 1, scale: 1 }
+          }
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          onAnimationComplete={() => {
+            if (animateNewIcon) setIsNewLocal(false);
+          }}
           className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20"
         >
           <Sparkles size={16} color="white" />
