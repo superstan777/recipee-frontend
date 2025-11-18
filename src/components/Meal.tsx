@@ -1,12 +1,11 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
 import { useHideMeal } from "@/hooks/useHideMeal";
 import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Trash2, Tag, Star, Sparkles } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { SidebarTag } from "@/hooks/useSidebar";
+import { useState } from "react";
 
 interface MealProps {
   meal_id: number;
@@ -14,17 +13,7 @@ interface MealProps {
   name: string | null;
   image: string | null;
   new: boolean;
-}
-
-interface SidebarTag {
-  id: number;
-  tag_name: string;
-}
-
-interface SidebarItem {
-  id: number;
-  name: string;
-  tags: SidebarTag[];
+  tagsForMealType: SidebarTag[];
 }
 
 export const Meal: React.FC<MealProps> = ({
@@ -33,27 +22,17 @@ export const Meal: React.FC<MealProps> = ({
   name,
   image,
   new: isNew,
+  tagsForMealType,
 }) => {
   const hideMealMutation = useHideMeal();
-  const [tagsOpen, setTagsOpen] = React.useState(false);
   const isMobile = useIsMobile();
+  const markRef = useMarkAsSeen(meal_id, isNew);
+
+  const [tagsOpen, setTagsOpen] = useState(false);
 
   const handleHideClick = () => {
     hideMealMutation.mutate({ meal_id, hidden: true });
   };
-
-  const markRef = useMarkAsSeen(meal_id, isNew);
-
-  const { data: sidebarData } = useQuery<SidebarItem[]>({
-    queryKey: ["sidebar"],
-    queryFn: () => api.get("/sidebar").then((r) => r.data),
-  });
-
-  const tagsForMealType = React.useMemo<SidebarTag[]>(() => {
-    if (!sidebarData || !meal_type) return [];
-    const mealTypeObj = sidebarData.find((m) => m.name === meal_type);
-    return mealTypeObj?.tags ?? [];
-  }, [sidebarData, meal_type]);
 
   return (
     <div
@@ -61,7 +40,7 @@ export const Meal: React.FC<MealProps> = ({
       className="relative w-full aspect-3/5 rounded-md shadow-md bg-gray-100"
     >
       {isNew && (
-        <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20 ">
+        <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20">
           <Sparkles size={16} color="white" />
         </div>
       )}
@@ -85,7 +64,7 @@ export const Meal: React.FC<MealProps> = ({
 
         <div className="flex gap-2">
           <button
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer hidden"
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer"
             aria-label="Rate meal"
           >
             <Star size={20} color="black" />

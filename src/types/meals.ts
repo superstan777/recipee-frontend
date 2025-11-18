@@ -2,19 +2,18 @@ export interface MealData {
   pagination_id: number;
   id: number;
   name: string;
-  meal_type: string | null;
+  meal_type: string;
   hidden: boolean;
-  done: boolean;
-  rating: string | null;
+  rating: number | null;
   new: boolean;
   created_at: string;
   image: {
     url: string | null;
     local_path: string | null;
-  } | null;
+  };
 }
 
-export interface MealsResponse {
+export interface MealsPage {
   data: MealData[];
   nextCursor: number | null;
 }

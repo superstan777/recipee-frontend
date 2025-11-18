@@ -1,10 +1,12 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useMemo } from "react";
 import { useMeals } from "../hooks/useMeals";
 import { Meal } from "./Meal";
-import type { MealData, MealsResponse } from "../types/meals";
+import type { MealData, MealsPage } from "../types/meals";
 import type { InfiniteData } from "@tanstack/react-query";
 import { useFiltersStore } from "../store/filters";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSidebar } from "@/hooks/useSidebar";
+import type { SidebarTag } from "@/hooks/useSidebar";
 
 export const MealsList = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -15,7 +17,19 @@ export const MealsList = () => {
   );
   const selectedTagId = useFiltersStore((state) => state.selectedTagId);
 
-  // HOTFIX
+  const { data: sidebar } = useSidebar();
+
+  const tagsMap = useMemo(() => {
+    const map: Record<string, SidebarTag[]> = {};
+
+    sidebar?.forEach((mealType) => {
+      map[mealType.name] = mealType.tags;
+    });
+
+    return map;
+  }, [sidebar]);
+
+  // HOTFIX przy zmianie filtrów
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: ["meals"],
@@ -39,8 +53,8 @@ export const MealsList = () => {
   });
 
   const meals =
-    (data as InfiniteData<MealsResponse> | undefined)?.pages.flatMap(
-      (page: MealsResponse) => page.data
+    (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
+      (page: MealsPage) => page.data
     ) ?? [];
 
   const lastMealRef = useCallback(
@@ -82,9 +96,10 @@ export const MealsList = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 p-4  sm:grid-cols-2 lg:grid-cols-3 gap-4  ">
+      <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
+
           return (
             <div key={meal.id} ref={isLast ? lastMealRef : null}>
               <Meal
@@ -93,6 +108,7 @@ export const MealsList = () => {
                 name={meal.name}
                 image={meal.image?.url || null}
                 new={meal.new}
+                tagsForMealType={tagsMap[meal.meal_type] ?? []}
               />
             </div>
           );
