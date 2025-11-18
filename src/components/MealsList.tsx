@@ -51,6 +51,7 @@ export const MealsList = () => {
     mealTypeId: selectedMealTypeId,
     tagId: selectedTagId,
   });
+  console.log(data);
 
   const meals =
     (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
@@ -109,6 +110,7 @@ export const MealsList = () => {
                 image={meal.image?.url || null}
                 new={meal.new}
                 tagsForMealType={tagsMap[meal.meal_type] ?? []}
+                rating={meal.rating}
               />
             </div>
           );

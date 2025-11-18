@@ -20,7 +20,6 @@ export const useRemoveMealTag = () => {
       queryClient.invalidateQueries({
         queryKey: ["meal-tags", variables.meal_id],
       });
-      queryClient.invalidateQueries({ queryKey: ["meals"] });
     },
     onError: (err) => {
       console.error("Błąd usuwania tagu z posiłku:", err);
