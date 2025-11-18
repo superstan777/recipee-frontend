@@ -7,6 +7,7 @@ import { useFiltersStore } from "../store/filters";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSidebar } from "@/hooks/useSidebar";
 import type { SidebarTag } from "@/hooks/useSidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const MealsList = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -51,7 +52,6 @@ export const MealsList = () => {
     mealTypeId: selectedMealTypeId,
     tagId: selectedTagId,
   });
-  console.log(data);
 
   const meals =
     (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
@@ -74,11 +74,19 @@ export const MealsList = () => {
     [fetchNextPage, hasNextPage, isFetchingNextPage]
   );
 
+  const renderSkeletons = (count: number) => {
+    return Array.from({ length: count }).map((_, idx) => (
+      <div key={idx}>
+        <Skeleton className="w-full aspect-3/5 rounded-md" />
+      </div>
+    ));
+  };
+
   if (isLoading && meals.length === 0)
     return (
-      <p className="flex justify-center items-center h-screen text-gray-500">
-        Ładowanie posiłków...
-      </p>
+      <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {renderSkeletons(6)}
+      </div>
     );
 
   if (isError)
@@ -115,13 +123,9 @@ export const MealsList = () => {
             </div>
           );
         })}
-      </div>
 
-      {isFetchingNextPage && (
-        <p className="flex justify-center mt-4 text-gray-500">
-          Ładowanie kolejnych posiłków...
-        </p>
-      )}
+        {isFetchingNextPage && renderSkeletons(6)}
+      </div>
     </div>
   );
 };
