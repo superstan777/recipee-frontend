@@ -6,9 +6,13 @@ const markAsSeen = async (mealId: number) => {
   return api.patch(`/meals/${mealId}/seen`).then((r) => r.data);
 };
 
-export function useMarkAsSeen(mealId: number, isNew: boolean) {
-  const hasSent = useRef(false);
+export function useMarkAsSeen(
+  mealId: number,
+  isNew: boolean,
+  onSeen: () => void
+) {
   const ref = useRef<HTMLDivElement | null>(null);
+  const hasTriggered = useRef(false);
 
   const mutation = useMutation({
     mutationFn: () => markAsSeen(mealId),
@@ -23,8 +27,9 @@ export function useMarkAsSeen(mealId: number, isNew: boolean) {
       (entries) => {
         const entry = entries[0];
 
-        if (entry.intersectionRatio === 1 && !hasSent.current) {
-          hasSent.current = true;
+        if (entry.intersectionRatio === 1 && !hasTriggered.current) {
+          hasTriggered.current = true;
+          onSeen();
           mutation.mutate();
         }
       },

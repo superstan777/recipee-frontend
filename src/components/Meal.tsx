@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";
 import { Sparkles } from "lucide-react";
@@ -23,15 +24,27 @@ export const Meal: React.FC<MealProps> = ({
   tagsForMealType,
   rating,
 }) => {
-  const markRef = useMarkAsSeen(meal_id, isNew);
+  const [isNewLocal, setIsNewLocal] = useState(isNew);
+  const [animateBadge, setAnimateBadge] = useState(false);
+
+  const ref = useMarkAsSeen(meal_id, isNewLocal, () => {
+    setAnimateBadge(true);
+
+    setTimeout(() => setIsNewLocal(false), 300);
+  });
 
   return (
     <div
-      ref={markRef}
+      ref={ref}
       className="relative w-full aspect-3/5 rounded-md shadow-md bg-gray-100"
     >
-      {isNew && (
-        <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20">
+      {isNewLocal && (
+        <div
+          className={`absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20
+            transition-all duration-300 ease-out
+            ${animateBadge ? "opacity-0 scale-50" : "opacity-100 scale-100"}
+          `}
+        >
           <Sparkles size={16} color="white" />
         </div>
       )}
@@ -60,7 +73,7 @@ export const Meal: React.FC<MealProps> = ({
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-white/90 flex items-center justify-center p-4 z-10">
+      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-white/90 flex items-center justify-center p-4 z-10 rounded-b-md">
         {name && (
           <h3 className="text-gray-900 text-base font-semibold text-center">
             {name}
