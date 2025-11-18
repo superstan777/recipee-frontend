@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";
 import { Sparkles } from "lucide-react";
@@ -25,12 +26,9 @@ export const Meal: React.FC<MealProps> = ({
   rating,
 }) => {
   const [isNewLocal, setIsNewLocal] = useState(isNew);
-  const [animateBadge, setAnimateBadge] = useState(false);
 
   const ref = useMarkAsSeen(meal_id, isNewLocal, () => {
-    setAnimateBadge(true);
-
-    setTimeout(() => setIsNewLocal(false), 300);
+    setIsNewLocal(false);
   });
 
   return (
@@ -39,22 +37,26 @@ export const Meal: React.FC<MealProps> = ({
       className="relative w-full aspect-3/5 rounded-md shadow-md bg-gray-100"
     >
       {isNewLocal && (
-        <div
-          className={`absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20
-            transition-all duration-300 ease-out
-            ${animateBadge ? "opacity-0 scale-50" : "opacity-100 scale-100"}
-          `}
+        <motion.div
+          initial={{ opacity: 1, scale: 1 }}
+          animate={{ opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20"
         >
           <Sparkles size={16} color="white" />
-        </div>
+        </motion.div>
       )}
 
       {image && (
-        <div className="absolute top-0 left-0 w-full h-full rounded-md overflow-hidden z-0">
-          <img
+        <div className="absolute top-0 left-0 w-full h-full rounded-md overflow-hidden z-0 bg-gray-200">
+          <motion.img
             src={image}
             alt={name || "Meal"}
-            className="w-full h-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="w-full h-full object-cover rounded-md"
+            loading="lazy"
           />
         </div>
       )}
