@@ -1,11 +1,8 @@
-import { useHideMeal } from "@/hooks/useHideMeal";
 import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";
-import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Trash2, Tag, Star, Sparkles } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import type { SidebarTag } from "@/hooks/useSidebar";
-import { useState } from "react";
+import { Sparkles } from "lucide-react";
+import { MealHideHoverCard } from "./MealHideHoverCard";
+import { MealRatingHoverCard } from "./MealRatingHoverCard";
 
 interface MealProps {
   meal_id: number;
@@ -13,7 +10,8 @@ interface MealProps {
   name: string | null;
   image: string | null;
   new: boolean;
-  tagsForMealType: SidebarTag[];
+  tagsForMealType: { id: number; tag_name: string }[];
+  rating: number | null;
 }
 
 export const Meal: React.FC<MealProps> = ({
@@ -23,16 +21,9 @@ export const Meal: React.FC<MealProps> = ({
   image,
   new: isNew,
   tagsForMealType,
+  rating,
 }) => {
-  const hideMealMutation = useHideMeal();
-  const isMobile = useIsMobile();
   const markRef = useMarkAsSeen(meal_id, isNew);
-
-  const [tagsOpen, setTagsOpen] = useState(false);
-
-  const handleHideClick = () => {
-    hideMealMutation.mutate({ meal_id, hidden: true });
-  };
 
   return (
     <div
@@ -63,39 +54,9 @@ export const Meal: React.FC<MealProps> = ({
         )}
 
         <div className="flex gap-2">
-          <button
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer"
-            aria-label="Rate meal"
-          >
-            <Star size={20} color="black" />
-          </button>
-
-          <HoverCard open={tagsOpen} onOpenChange={setTagsOpen}>
-            <HoverCardTrigger asChild>
-              <button
-                onClick={() => isMobile && setTagsOpen(!tagsOpen)}
-                className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer"
-                aria-label="Show tags"
-              >
-                <Tag size={20} color="black" />
-              </button>
-            </HoverCardTrigger>
-
-            <MealTagsHoverCard
-              meal_id={meal_id}
-              sidebarTags={tagsForMealType}
-              isOpen={tagsOpen}
-              onClose={() => setTagsOpen(false)}
-            />
-          </HoverCard>
-
-          <button
-            onClick={handleHideClick}
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-white shadow-md cursor-pointer"
-            aria-label="Hide meal"
-          >
-            <Trash2 size={20} color="black" />
-          </button>
+          <MealRatingHoverCard meal_id={meal_id} rating={rating} />
+          <MealTagsHoverCard meal_id={meal_id} sidebarTags={tagsForMealType} />
+          <MealHideHoverCard meal_id={meal_id} />
         </div>
       </div>
 

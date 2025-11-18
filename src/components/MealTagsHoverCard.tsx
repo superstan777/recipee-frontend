@@ -1,41 +1,52 @@
 import { useState, useEffect } from "react";
-import { HoverCardContent } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tag } from "lucide-react";
+import { Label } from "./ui/label";
+
+import { useMealTags } from "@/hooks/useMealTags";
 import { useAddMealTag } from "@/hooks/useAddMealTag";
 import { useRemoveMealTag } from "@/hooks/useRemoveMealTag";
-import { useMealTags } from "@/hooks/useMealTags";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MealTagsHoverCardProps {
   meal_id: number;
   sidebarTags: { id: number; tag_name: string }[];
-  isOpen: boolean;
-  onClose?: () => void;
 }
 
 export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
   meal_id,
   sidebarTags,
-  isOpen,
 }) => {
+  const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
+
   const { data: mealTags, isLoading, refetch } = useMealTags(meal_id);
   const addMealTag = useAddMealTag();
   const removeMealTag = useRemoveMealTag();
 
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
 
+  // Refetch tags only when hovercard is open
   useEffect(() => {
-    if (isOpen) refetch();
-  }, [isOpen, refetch]);
+    if (open) refetch();
+  }, [open, refetch]);
 
+  // Sync state with backend
   useEffect(() => {
     if (mealTags) {
       setSelectedTags(mealTags.map((mt) => mt.tag.id));
     }
   }, [mealTags]);
 
-  const handleCheckboxChange = (tagId: number) => {
+  const toggleTag = (tagId: number) => {
     const isSelected = selectedTags.includes(tagId);
 
+    // optimistic update
     setSelectedTags((prev) =>
       isSelected ? prev.filter((id) => id !== tagId) : [...prev, tagId]
     );
@@ -46,6 +57,7 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
       { meal_id, tag_id: tagId },
       {
         onError: () => {
+          // rollback on error
           setSelectedTags((prev) =>
             isSelected ? [...prev, tagId] : prev.filter((id) => id !== tagId)
           );
@@ -57,28 +69,53 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
     );
   };
 
+  const handleTriggerClick = () => {
+    if (isMobile) setOpen((prev) => !prev);
+  };
+
   return (
-    <HoverCardContent side="right" align="start" className="w-64">
-      <div className="flex flex-col gap-2">
-        {isLoading ? (
-          <div className="text-sm text-gray-500">Ładowanie…</div>
-        ) : sidebarTags.length === 0 ? (
-          <div className="text-sm text-gray-500">Brak tagów do dodania</div>
-        ) : (
-          sidebarTags.map((tag) => (
-            <label
-              key={tag.id}
-              className="flex items-center gap-2 text-sm cursor-pointer"
-            >
-              <Checkbox
-                checked={selectedTags.includes(tag.id)}
-                onCheckedChange={() => handleCheckboxChange(tag.id)}
-              />
-              {tag.tag_name}
-            </label>
-          ))
-        )}
-      </div>
-    </HoverCardContent>
+    <HoverCard open={open} onOpenChange={setOpen}>
+      <HoverCardTrigger asChild>
+        <button
+          onClick={handleTriggerClick}
+          className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition cursor-pointer"
+          aria-label="Show tags"
+        >
+          <Tag size={20} color="black" />
+        </button>
+      </HoverCardTrigger>
+
+      <HoverCardContent side="right" align="start" className="w-64">
+        <div className="text-sm mb-2">Dodaj tagi</div>
+
+        <div className="flex flex-col gap-2">
+          {isLoading ? (
+            <div className="text-sm text-gray-500">Ładowanie…</div>
+          ) : sidebarTags.length === 0 ? (
+            <div className="text-sm text-gray-500">Brak tagów do dodania</div>
+          ) : (
+            sidebarTags.map((tag) => {
+              const tagId = `meal-tag-${meal_id}-${tag.id}`;
+              return (
+                <div
+                  key={tag.id}
+                  className="flex items-center space-x-2 text-sm "
+                >
+                  <Checkbox
+                    id={tagId}
+                    checked={selectedTags.includes(tag.id)}
+                    onCheckedChange={() => toggleTag(tag.id)}
+                    className="cursor-pointer"
+                  />
+                  <Label htmlFor={tagId} className="cursor-pointer">
+                    {tag.tag_name}
+                  </Label>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   );
 };
