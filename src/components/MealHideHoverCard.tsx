@@ -41,7 +41,7 @@ export const MealHideHoverCard: React.FC<MealHideHoverCardProps> = ({
         </button>
       </HoverCardTrigger>
 
-      <HoverCardContent side="right" align="start" className="w-56">
+      <HoverCardContent side="right" align="start" className="w-auto">
         <div className="text-sm mb-2">Usuń posiłek</div>
 
         <button

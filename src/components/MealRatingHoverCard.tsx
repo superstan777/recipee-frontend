@@ -27,7 +27,8 @@ export const MealRatingHoverCard: React.FC<MealRatingHoverCardProps> = ({
   };
 
   const handleRate = (value: number) => {
-    rateMeal.mutate({ meal_id, rating: value });
+    const newRating = rating === value ? null : value;
+    rateMeal.mutate({ meal_id, rating: newRating });
     setOpen(false);
   };
 
@@ -39,23 +40,26 @@ export const MealRatingHoverCard: React.FC<MealRatingHoverCardProps> = ({
           className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100 transition cursor-pointer"
           aria-label="Rate meal"
         >
-          <Star size={20} />
+          <Star
+            size={20}
+            color="black"
+            fill={rating !== null ? "black" : "transparent"}
+          />
         </button>
       </HoverCardTrigger>
 
-      <HoverCardContent side="right" align="start" className="w-56">
+      <HoverCardContent side="right" align="start" className="w-auto">
         <div className="text-sm mb-2">Oceń posiłek</div>
-        <div className="flex justify-between mt-2">
+        <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((value) => (
-            <button
+            <Star
+              size={20}
               key={value}
+              color="black"
+              fill={rating !== null && value <= rating ? "black" : "white"}
               onClick={() => handleRate(value)}
-              className={`p-1 rounded-md transition ${
-                rating === value ? "bg-yellow-400" : "bg-gray-200"
-              }`}
-            >
-              <Star size={20} color={rating === value ? "white" : "black"} />
-            </button>
+              className="cursor-pointer transition-colors"
+            />
           ))}
         </div>
       </HoverCardContent>

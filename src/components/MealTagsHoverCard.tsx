@@ -85,7 +85,7 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
         </button>
       </HoverCardTrigger>
 
-      <HoverCardContent side="right" align="start" className="w-64">
+      <HoverCardContent side="right" align="start" className="w-auto">
         <div className="text-sm mb-2">Dodaj tagi</div>
 
         <div className="flex flex-col gap-2">
