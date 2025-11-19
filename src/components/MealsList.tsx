@@ -6,6 +6,7 @@ import type { InfiniteData } from "@tanstack/react-query";
 import { useFiltersStore } from "../store/filters";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSidebar } from "@/hooks/useSidebar";
+import { useMealStatuses, type MealStatus } from "@/hooks/useMealStatuses";
 import type { SidebarTag } from "@/hooks/useSidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MealDialog } from "./MealDialog";
@@ -23,21 +24,15 @@ export const MealsList = () => {
 
   const tagsMap = useMemo(() => {
     const map: Record<string, SidebarTag[]> = {};
-
     sidebar?.forEach((mealType) => {
       map[mealType.name] = mealType.tags;
     });
-
     return map;
   }, [sidebar]);
 
   // HOTFIX przy zmianie filtrów
   useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ["meals"],
-      exact: false,
-    });
-
+    queryClient.invalidateQueries({ queryKey: ["meals"], exact: false });
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [selectedMealTypeId, selectedTagId, queryClient]);
 
@@ -49,17 +44,14 @@ export const MealsList = () => {
     isLoading,
     isError,
     error,
-  } = useMeals({
-    mealTypeId: selectedMealTypeId,
-    tagId: selectedTagId,
-  });
-
-  console.log(data);
+  } = useMeals({ mealTypeId: selectedMealTypeId, tagId: selectedTagId });
 
   const meals =
     (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
       (page: MealsPage) => page.data
     ) ?? [];
+
+  const { data: statuses } = useMealStatuses(meals, 1); // userId = 1 tymczasowo
 
   const lastMealRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -113,6 +105,7 @@ export const MealsList = () => {
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
+          const status: MealStatus | undefined = statuses?.[meal.id];
 
           return (
             <div key={meal.id} ref={isLast ? lastMealRef : null}>
@@ -123,9 +116,8 @@ export const MealsList = () => {
                 image={meal.image?.url || null}
                 tagsForMealType={tagsMap[meal.meal_type] ?? []}
                 onClick={() => setSelectedMeal(meal)}
-                // temp
-                new={true}
-                rating={null}
+                new={status?.new ?? true}
+                rating={status?.rating ?? null}
               />
             </div>
           );
