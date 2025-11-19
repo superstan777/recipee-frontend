@@ -14,6 +14,7 @@ import { MealDialog } from "./MealDialog";
 export const MealsList = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const queryClient = useQueryClient();
+  const [selectedMeal, setSelectedMeal] = useState<MealData | null>(null);
 
   const selectedMealTypeId = useFiltersStore(
     (state) => state.selectedMealTypeId
@@ -76,8 +77,6 @@ export const MealsList = () => {
       </div>
     ));
   };
-
-  const [selectedMeal, setSelectedMeal] = useState<MealData | null>(null);
 
   if (isLoading && meals.length === 0)
     return (
