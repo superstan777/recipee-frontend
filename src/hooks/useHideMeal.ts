@@ -3,13 +3,13 @@ import { api } from "../lib/api";
 
 interface HideMealParams {
   meal_id: number;
-  userId: number;
+  user_id: number;
 }
 
-const hideMeal = async (meal_id: number, userId: number) => {
+const hideMeal = async (meal_id: number, user_id: number) => {
   const response = await api.patch(`/meal-statuses/hide`, {
-    mealId: meal_id, // nowy body param
-    userId,
+    meal_id,
+    user_id,
   });
   return response.data;
 };
@@ -18,29 +18,26 @@ export const useHideMeal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ meal_id, userId }: HideMealParams) =>
-      hideMeal(meal_id, userId),
+    mutationFn: ({ meal_id, user_id }: HideMealParams) =>
+      hideMeal(meal_id, user_id),
 
     onSuccess: (_, variables) => {
       const mealId = variables.meal_id;
 
-      // Szukamy wszystkich cache, które zawierają tego mealId (jak wcześniej)
       queryClient
         .getQueryCache()
-        .findAll({
-          queryKey: ["meal-statuses"],
-          exact: false,
-        })
+        .findAll({ queryKey: ["meal-statuses"], exact: false })
         .forEach((query) => {
           const key = query.queryKey as any[];
-
-          // key = ["meal-statuses", userId, mealIds[]]
           const mealIds = key[2];
 
           if (Array.isArray(mealIds) && mealIds.includes(mealId)) {
             queryClient.invalidateQueries({ queryKey: key });
           }
         });
+
+      // Opcjonalnie: jeśli chcesz, aby ukryty posiłek od razu zniknął z listy - rozkmina na pozniej
+      // queryClient.invalidateQueries({ queryKey: ["meals"], exact: false });
     },
 
     onError: (err) => {

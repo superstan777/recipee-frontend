@@ -52,7 +52,12 @@ export const MealsList = () => {
       (page: MealsPage) => page.data
     ) ?? [];
 
-  const { data: statuses } = useMealStatuses(meals, 1); // userId = 1 tymczasowo
+  const { data: statuses } = useMealStatuses(meals, 1); // userId = 1 tymczasowo, poki nie mamy auth
+
+  const visibleMeals = useMemo(
+    () => meals.filter((meal) => !statuses?.[meal.id]?.hidden),
+    [meals, statuses]
+  );
 
   const lastMealRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -92,7 +97,7 @@ export const MealsList = () => {
       </p>
     );
 
-  if (!isLoading && meals.length === 0)
+  if (!isLoading && visibleMeals.length === 0)
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
         <p>Brak posiłków</p>
@@ -102,8 +107,8 @@ export const MealsList = () => {
   return (
     <>
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {meals.map((meal: MealData, index: number) => {
-          const isLast = index === meals.length - 1;
+        {visibleMeals.map((meal: MealData, index: number) => {
+          const isLast = index === visibleMeals.length - 1;
           const status: MealStatus | undefined = statuses?.[meal.id];
 
           return (

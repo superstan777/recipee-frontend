@@ -5,6 +5,7 @@ export interface MealStatus {
   meal_id: number;
   rating: number | null;
   new: boolean;
+  hidden: boolean;
 }
 
 export const fetchMealStatuses = async (
