@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useMemo } from "react";
+import { useRef, useCallback, useEffect, useMemo, useState } from "react";
 import { useMeals } from "../hooks/useMeals";
 import { Meal } from "./Meal";
 import type { MealData, MealsPage } from "../types/meals";
@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useSidebar } from "@/hooks/useSidebar";
 import type { SidebarTag } from "@/hooks/useSidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MealDialog } from "./MealDialog";
 
 export const MealsList = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -82,6 +83,8 @@ export const MealsList = () => {
     ));
   };
 
+  const [selectedMeal, setSelectedMeal] = useState<MealData | null>(null);
+
   if (isLoading && meals.length === 0)
     return (
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -104,7 +107,7 @@ export const MealsList = () => {
     );
 
   return (
-    <div>
+    <>
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
@@ -119,6 +122,7 @@ export const MealsList = () => {
                 new={meal.new}
                 tagsForMealType={tagsMap[meal.meal_type] ?? []}
                 rating={meal.rating}
+                onClick={() => setSelectedMeal(meal)}
               />
             </div>
           );
@@ -126,6 +130,14 @@ export const MealsList = () => {
 
         {isFetchingNextPage && renderSkeletons(6)}
       </div>
-    </div>
+
+      {selectedMeal && (
+        <MealDialog
+          isOpen={!!selectedMeal}
+          meal={selectedMeal}
+          onClose={() => setSelectedMeal(null)}
+        />
+      )}
+    </>
   );
 };
