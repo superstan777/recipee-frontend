@@ -3,10 +3,6 @@ export interface MealData {
   id: number;
   name: string;
   meal_type: string;
-  hidden: boolean;
-  rating: number | null;
-  new: boolean;
-  created_at: string;
   image: {
     url: string | null;
     local_path: string | null;

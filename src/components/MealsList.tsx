@@ -54,6 +54,8 @@ export const MealsList = () => {
     tagId: selectedTagId,
   });
 
+  console.log(data);
+
   const meals =
     (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
       (page: MealsPage) => page.data
@@ -119,10 +121,11 @@ export const MealsList = () => {
                 meal_type={meal.meal_type}
                 name={meal.name}
                 image={meal.image?.url || null}
-                new={meal.new}
                 tagsForMealType={tagsMap[meal.meal_type] ?? []}
-                rating={meal.rating}
                 onClick={() => setSelectedMeal(meal)}
+                // temp
+                new={true}
+                rating={null}
               />
             </div>
           );
