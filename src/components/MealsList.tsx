@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MealDialog } from "./MealDialog";
 
 export const MealsList = () => {
+  const currentUserId = 1; // temp solution
   const observerRef = useRef<IntersectionObserver | null>(null);
   const queryClient = useQueryClient();
   const [selectedMeal, setSelectedMeal] = useState<MealData | null>(null);
@@ -45,19 +46,18 @@ export const MealsList = () => {
     isLoading,
     isError,
     error,
-  } = useMeals({ mealTypeId: selectedMealTypeId, tagId: selectedTagId });
+  } = useMeals({
+    mealTypeId: selectedMealTypeId,
+    tagId: selectedTagId,
+    userId: currentUserId,
+  });
 
   const meals =
     (data as InfiniteData<MealsPage> | undefined)?.pages.flatMap(
       (page: MealsPage) => page.data
     ) ?? [];
 
-  const { data: statuses } = useMealStatuses(meals, 1); // userId = 1 tymczasowo, poki nie mamy auth
-
-  const visibleMeals = useMemo(
-    () => meals.filter((meal) => !statuses?.[meal.id]?.hidden),
-    [meals, statuses]
-  );
+  const { data: statuses } = useMealStatuses(meals, currentUserId);
 
   const lastMealRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -97,7 +97,7 @@ export const MealsList = () => {
       </p>
     );
 
-  if (!isLoading && visibleMeals.length === 0)
+  if (!isLoading && meals.length === 0)
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
         <p>Brak posiłków</p>
@@ -107,8 +107,8 @@ export const MealsList = () => {
   return (
     <>
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {visibleMeals.map((meal: MealData, index: number) => {
-          const isLast = index === visibleMeals.length - 1;
+        {meals.map((meal: MealData, index: number) => {
+          const isLast = index === meals.length - 1;
           const status: MealStatus | undefined = statuses?.[meal.id];
 
           return (

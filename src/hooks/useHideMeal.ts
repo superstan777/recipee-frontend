@@ -36,8 +36,8 @@ export const useHideMeal = () => {
           }
         });
 
-      // Opcjonalnie: jeśli chcesz, aby ukryty posiłek od razu zniknął z listy - rozkmina na pozniej
-      // queryClient.invalidateQueries({ queryKey: ["meals"], exact: false });
+      // robimy refetch wszystkiego - do poprawy pozniej aby matchowalo z konkretna strona meals
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
     },
 
     onError: (err) => {
