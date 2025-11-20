@@ -13,3 +13,10 @@ export interface MealsPage {
   data: MealData[];
   nextCursor: number | null;
 }
+
+export interface MealStatus {
+  meal_id: number;
+  rating: number | null;
+  new: boolean;
+  hidden: boolean;
+}

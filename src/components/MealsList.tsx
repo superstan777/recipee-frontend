@@ -114,7 +114,7 @@ export const MealsList = () => {
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
-          const status: MealStatus = statuses[meal.id]; // status zawsze istnieje, bo czekamy na dane
+          const status: MealStatus = statuses[meal.id];
 
           return (
             <div key={meal.id} ref={isLast ? lastMealRef : null}>
@@ -139,6 +139,7 @@ export const MealsList = () => {
         <MealDialog
           isOpen={!!selectedMeal}
           meal={selectedMeal}
+          status={statuses[selectedMeal.id]} //
           onClose={() => setSelectedMeal(null)}
         />
       )}

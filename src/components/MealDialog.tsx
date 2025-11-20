@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import type { MealData } from "../types/meals";
+import type { MealData, MealStatus } from "../types/meals";
 import { MealRating } from "./MealRating";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 interface MealDialogProps {
   isOpen: boolean;
   meal: MealData;
+  status: MealStatus;
   onClose: () => void;
 }
 
@@ -19,9 +20,10 @@ interface Recipe {
 export const MealDialog: React.FC<MealDialogProps> = ({
   isOpen,
   meal,
+  status,
   onClose,
 }) => {
-  const [recipeJSON, setRecipeJSON] = useState<string>(""); // textarea
+  const [recipeJSON, setRecipeJSON] = useState<string>("");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +61,11 @@ export const MealDialog: React.FC<MealDialogProps> = ({
 
           {/* COLUMN 2+3 — DETAILS + RECIPE */}
           <div className="flex flex-col p-10 md:col-span-2 overflow-y-auto">
-            <MealRating meal_id={meal.id} rating={meal.rating} starSize={24} />
+            <MealRating
+              meal_id={meal.id}
+              rating={status.rating}
+              starSize={24}
+            />
             <h2 className="text-3xl font-bold mt-4">{meal.name}</h2>
 
             {!recipe && (
