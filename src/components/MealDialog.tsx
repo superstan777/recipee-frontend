@@ -32,7 +32,7 @@ export const MealDialog: React.FC<MealDialogProps> = ({
       const parsed: Recipe = JSON.parse(recipeJSON);
       setRecipe(parsed);
       setError(null);
-    } catch (err) {
+    } catch {
       setError("Nieprawidłowy format JSON");
     }
   };

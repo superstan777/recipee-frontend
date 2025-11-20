@@ -14,6 +14,8 @@ const hideMeal = async (meal_id: number, user_id: number) => {
   return response.data;
 };
 
+type MealStatusesQueryKey = ["meal-statuses", number, number[]];
+
 export const useHideMeal = () => {
   const queryClient = useQueryClient();
 
@@ -24,19 +26,30 @@ export const useHideMeal = () => {
     onSuccess: (_, variables) => {
       const mealId = variables.meal_id;
 
-      queryClient
+      const queries = queryClient
         .getQueryCache()
-        .findAll({ queryKey: ["meal-statuses"], exact: false })
-        .forEach((query) => {
-          const key = query.queryKey as any[];
-          const mealIds = key[2];
+        .findAll({ queryKey: ["meal-statuses"], exact: false });
 
-          if (Array.isArray(mealIds) && mealIds.includes(mealId)) {
-            queryClient.invalidateQueries({ queryKey: key });
+      queries.forEach((query) => {
+        const key = query.queryKey;
+
+        if (
+          Array.isArray(key) &&
+          key.length === 3 &&
+          key[0] === "meal-statuses" &&
+          typeof key[1] === "number" &&
+          Array.isArray(key[2])
+        ) {
+          const typedKey = key as MealStatusesQueryKey;
+          const mealIds = typedKey[2];
+
+          if (mealIds.includes(mealId)) {
+            queryClient.invalidateQueries({ queryKey: typedKey });
           }
-        });
+        }
+      });
 
-      // robimy refetch wszystkiego - do poprawy pozniej aby matchowalo z konkretna strona meals
+      // Do zoptymalizowania: invalidujemy wszystkie pages of meals
       queryClient.invalidateQueries({ queryKey: ["meals"] });
     },
 

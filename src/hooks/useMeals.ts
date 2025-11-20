@@ -11,16 +11,20 @@ interface MealsFilters {
   userId: number;
 }
 
+interface MealsRequest extends MealsFilters {
+  limit: number;
+  cursor?: number | null;
+}
+
 const fetchMeals = async (
   cursor: number | null,
   filters: MealsFilters
 ): Promise<MealsPage> => {
-  const body: Record<string, any> = {
+  const body: MealsRequest = {
     ...filters,
     limit: 30,
+    ...(cursor !== null ? { cursor } : {}),
   };
-
-  if (cursor !== null) body.cursor = cursor;
 
   const response = await api.post<MealsPage>("/meals/meals", body);
   return response.data;

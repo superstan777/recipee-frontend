@@ -42,7 +42,7 @@ export function useMarkAsSeen(
     observer.observe(ref.current);
 
     return () => observer.disconnect();
-  }, [isNew, userId]);
+  }, [isNew, userId, mutation, onSeen]);
 
   return ref;
 }
