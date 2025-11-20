@@ -28,6 +28,8 @@ export const TagDialog = ({
 }: TagDialogProps) => {
   const { mutate, isPending } = useAddSidebarTag();
 
+  const currentUserId = 1;
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -37,7 +39,7 @@ export const TagDialog = ({
     const tagName = formData.get("tag_name") as string;
 
     mutate(
-      { meal_type_id: mealTypeId, tag_name: tagName },
+      { user_id: currentUserId, meal_type_id: mealTypeId, tag_name: tagName },
       {
         onSuccess: () => {
           onOpenChange(false);

@@ -22,7 +22,7 @@ export const MealsList = () => {
   );
   const selectedTagId = useFiltersStore((state) => state.selectedTagId);
 
-  const { data: sidebar } = useSidebar();
+  const { data: sidebar } = useSidebar(currentUserId);
 
   const tagsMap = useMemo(() => {
     const map: Record<string, SidebarTag[]> = {};
