@@ -35,6 +35,10 @@ export const MealsList = () => {
   // HOTFIX przy zmianie filtrów
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["meals"], exact: false });
+    queryClient.invalidateQueries({
+      queryKey: ["meal-statuses"],
+      exact: false,
+    });
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [selectedMealTypeId, selectedTagId, queryClient]);
 
@@ -83,7 +87,8 @@ export const MealsList = () => {
     ));
   };
 
-  if (isLoading && meals.length === 0)
+  // --- nowa logika: nie renderujemy dopóki nie mamy meals i statuses ---
+  if (isLoading || !statuses)
     return (
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {renderSkeletons(6)}
@@ -97,7 +102,7 @@ export const MealsList = () => {
       </p>
     );
 
-  if (!isLoading && meals.length === 0)
+  if (meals.length === 0)
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
         <p>Brak posiłków</p>
@@ -109,7 +114,7 @@ export const MealsList = () => {
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
-          const status: MealStatus | undefined = statuses?.[meal.id];
+          const status: MealStatus = statuses[meal.id]; // status zawsze istnieje, bo czekamy na dane
 
           return (
             <div key={meal.id} ref={isLast ? lastMealRef : null}>
@@ -120,8 +125,8 @@ export const MealsList = () => {
                 image={meal.image?.url || null}
                 tagsForMealType={tagsMap[meal.meal_type] ?? []}
                 onClick={() => setSelectedMeal(meal)}
-                new={status?.new ?? true}
-                rating={status?.rating ?? null}
+                new={status.new} // typ boolean, zawsze dostępny
+                rating={status.rating ?? null}
               />
             </div>
           );
