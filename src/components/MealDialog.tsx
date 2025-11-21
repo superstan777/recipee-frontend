@@ -1,9 +1,16 @@
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import type { MealData, MealStatus } from "../types/meals";
 import { MealRating } from "./MealRating";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface MealDialogProps {
   isOpen: boolean;
@@ -47,6 +54,13 @@ export const MealDialog: React.FC<MealDialogProps> = ({
       }}
     >
       <DialogContent className="w-[80vw] max-w-[95vw] sm:max-w-[1500px] h-[90vh] p-0 overflow-y-auto rounded-xl border-0">
+        <VisuallyHidden>
+          <DialogHeader>
+            <DialogTitle>Meal Dialog</DialogTitle>
+
+            <DialogDescription>Contains meal details</DialogDescription>
+          </DialogHeader>
+        </VisuallyHidden>
         <div className="grid grid-cols-1 md:grid-cols-3 h-full">
           {/* COLUMN 1 — IMAGE */}
           <div className="flex flex-col">
