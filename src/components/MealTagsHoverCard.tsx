@@ -31,7 +31,6 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
     isLoading,
     refetch,
   } = useMealTags(currentUser, meal_id);
-  console.log(mealTags);
 
   const addMealTag = useAddMealTag();
   const removeMealTag = useRemoveMealTag();

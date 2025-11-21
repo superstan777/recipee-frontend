@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 
 interface RateMealParams {
+  user_id: number;
   meal_id: number;
   rating: number | null;
-  user_id: number;
 }
 
 const rateMeal = async ({ user_id, meal_id, rating }: RateMealParams) => {

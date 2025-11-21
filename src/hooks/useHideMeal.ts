@@ -2,14 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 
 interface HideMealParams {
-  meal_id: number;
   user_id: number;
+  meal_id: number;
 }
 
-const hideMeal = async (meal_id: number, user_id: number) => {
+const hideMeal = async (user_id: number, meal_id: number) => {
   const response = await api.patch(`/meal-statuses/hide`, {
-    meal_id,
     user_id,
+    meal_id,
   });
   return response.data;
 };
@@ -20,8 +20,8 @@ export const useHideMeal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ meal_id, user_id }: HideMealParams) =>
-      hideMeal(meal_id, user_id),
+    mutationFn: ({ user_id, meal_id }: HideMealParams) =>
+      hideMeal(user_id, meal_id),
 
     onSuccess: (_, variables) => {
       const mealId = variables.meal_id;
