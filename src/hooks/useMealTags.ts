@@ -6,10 +6,10 @@ export interface MealTag {
   tag_name: string;
 }
 
-const fetchMealTags = async (user_id: number, meal_type_id: number) => {
-  const res = await api.post<MealTag[]>("/sidebar-tags/meal-type", {
+const fetchMealTags = async (user_id: number, meal_id: number) => {
+  const res = await api.post<MealTag[]>("/meal-tags/tags-for-meal", {
     user_id,
-    meal_type_id,
+    meal_id,
   });
 
   return res.data;
@@ -17,16 +17,16 @@ const fetchMealTags = async (user_id: number, meal_type_id: number) => {
 
 export const useMealTags = (
   user_id: number,
-  meal_type_id: number,
+  meal_id: number,
   options?: Omit<
     UseQueryOptions<MealTag[], Error, MealTag[], [string, number, number]>,
     "queryKey" | "queryFn"
   >
 ) =>
   useQuery<MealTag[], Error, MealTag[], [string, number, number]>({
-    queryKey: ["meal-tags", user_id, meal_type_id],
-    queryFn: () => fetchMealTags(user_id, meal_type_id),
+    queryKey: ["meal-tags", user_id, meal_id],
+    queryFn: () => fetchMealTags(user_id, meal_id),
     staleTime: Infinity,
-    enabled: false, // lazy
+    enabled: false, // lazy load
     ...options,
   });
