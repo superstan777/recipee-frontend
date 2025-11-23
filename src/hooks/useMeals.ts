@@ -8,21 +8,29 @@ import { api } from "../lib/api";
 interface MealsFilters {
   mealTypeId?: number | null;
   tagId?: number | null;
+  userId: number;
+}
+
+interface MealsRequest extends MealsFilters {
+  limit: number;
+  cursor?: number | null;
 }
 
 const fetchMeals = async (
   cursor: number | null,
-  filters: MealsFilters = {}
+  filters: MealsFilters
 ): Promise<MealsPage> => {
-  const params: Record<string, any> = { ...filters, limit: 30 };
-  if (cursor !== null) params.cursor = cursor;
+  const body: MealsRequest = {
+    ...filters,
+    limit: 30,
+    ...(cursor !== null ? { cursor } : {}),
+  };
 
-  const response = await api.get<MealsPage>("/meals", { params });
+  const response = await api.post<MealsPage>("/meals/meals", body);
   return response.data;
 };
 
-// Hook zwracający MealsInfiniteResponse (react-query zrobi opakowanie)
-export const useMeals = (filters: MealsFilters = {}) => {
+export const useMeals = (filters: MealsFilters) => {
   return useInfiniteQuery<
     MealsPage,
     Error,

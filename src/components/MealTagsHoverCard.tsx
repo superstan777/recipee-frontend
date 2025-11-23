@@ -22,10 +22,15 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
   meal_id,
   sidebarTags,
 }) => {
+  const currentUser = 1;
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
 
-  const { data: mealTags, isLoading, refetch } = useMealTags(meal_id);
+  const {
+    data: mealTags,
+    isLoading,
+    refetch,
+  } = useMealTags(currentUser, meal_id);
 
   const addMealTag = useAddMealTag();
   const removeMealTag = useRemoveMealTag();
@@ -37,11 +42,11 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
   }, [open, refetch]);
 
   const handleToggleTag = (tagId: number) => {
-    const isSelected = mealTags?.some((mt) => mt.tag.id === tagId);
+    const isSelected = mealTags?.some((mt) => mt.id === tagId);
     const mutation = isSelected ? removeMealTag : addMealTag;
 
     mutation.mutate(
-      { meal_id, tag_id: tagId },
+      { user_id: currentUser, meal_id, tag_id: tagId },
       {
         onSettled: () => {
           // zamiast invalidateQueries -> wywołujemy refetch ręcznie
@@ -78,7 +83,7 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
           ) : (
             sidebarTags.map((tag) => {
               const tagId = `meal-tag-${meal_id}-${tag.id}`;
-              const isChecked = mealTags?.some((mt) => mt.tag.id === tag.id);
+              const isChecked = mealTags?.some((mt) => mt.id === tag.id);
 
               return (
                 <div

@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Star } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useRateMeal } from "@/hooks/useRateMeal";
+import { MealRating } from "./MealRating";
 
 interface MealRatingHoverCardProps {
   meal_id: number;
@@ -20,16 +20,8 @@ export const MealRatingHoverCard: React.FC<MealRatingHoverCardProps> = ({
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
 
-  const rateMeal = useRateMeal();
-
   const handleTriggerClick = () => {
     if (isMobile) setOpen((prev) => !prev);
-  };
-
-  const handleRate = (value: number) => {
-    const newRating = rating === value ? null : value;
-    rateMeal.mutate({ meal_id, rating: newRating });
-    setOpen(false);
   };
 
   return (
@@ -50,18 +42,7 @@ export const MealRatingHoverCard: React.FC<MealRatingHoverCardProps> = ({
 
       <HoverCardContent side="right" align="start" className="w-auto">
         <div className="text-sm mb-2">Oceń posiłek</div>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map((value) => (
-            <Star
-              size={20}
-              key={value}
-              color="black"
-              fill={rating !== null && value <= rating ? "black" : "white"}
-              onClick={() => handleRate(value)}
-              className="cursor-pointer transition-colors"
-            />
-          ))}
-        </div>
+        <MealRating meal_id={meal_id} rating={rating} starSize={20} />
       </HoverCardContent>
     </HoverCard>
   );

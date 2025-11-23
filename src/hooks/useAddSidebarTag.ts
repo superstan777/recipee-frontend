@@ -4,13 +4,19 @@ import { api } from "../lib/api";
 export interface AddSidebarTagParams {
   meal_type_id: number;
   tag_name: string;
+  user_id: number; // <- dodane
 }
 
 const addSidebarTag = async ({
+  user_id, // <- dodane
   meal_type_id,
   tag_name,
 }: AddSidebarTagParams) => {
-  const res = await api.post("/sidebar-tags", { meal_type_id, tag_name });
+  const res = await api.post("/sidebar-tags", {
+    user_id,
+    meal_type_id,
+    tag_name,
+  });
   return res.data;
 };
 

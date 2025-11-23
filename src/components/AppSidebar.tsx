@@ -18,9 +18,11 @@ import { Plus } from "lucide-react";
 import { TagDialog } from "@/components/TagDialog";
 import { useFiltersStore } from "@/store/filters";
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: sidebarData, isLoading, isError } = useSidebar();
+  const userId = 1; // temp solution
+  const { data: sidebarData, isLoading, isError } = useSidebar(userId);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMealTypeId, setDialogMealTypeId] = useState<number | null>(null);
@@ -31,9 +33,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { selectedMealTypeId, selectedTagId, setMealTypeId, setTagId } =
     useFiltersStore();
 
-  if (isLoading) return <p>Loading sidebar...</p>;
-  if (isError) return <p>Error loading sidebar</p>;
-
   const handleAddTagClick = (mealTypeId: number, mealTypeName: string) => {
     setDialogMealTypeId(mealTypeId);
     setDialogMealTypeName(mealTypeName);
@@ -43,6 +42,39 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isMealTypeActive = (mealTypeId: number) =>
     selectedMealTypeId === mealTypeId;
   const isTagActive = (tagId: number) => selectedTagId === tagId;
+
+  if (isLoading) {
+    return (
+      <Sidebar variant="floating" {...props} className="p-4 pr-0">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg">
+                <Skeleton className="h-6 w-20 rounded-md" />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarMenu className="gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SidebarMenuItem key={i}>
+                  <div className="flex items-center justify-between gap-1">
+                    <Skeleton className="h-6 flex-8 rounded-md" />
+                    <Skeleton className="h-6 flex-1 rounded" />
+                  </div>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+    );
+  }
+
+  if (isError) return <p>Error loading sidebar</p>;
 
   return (
     <Sidebar variant="floating" {...props} className="p-4 pr-0">
@@ -61,7 +93,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu className="gap-2">
             {sidebarData?.map((mealType: SidebarMealType) => (
               <SidebarMenuItem key={mealType.id}>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-1">
                   <SidebarMenuButton
                     isActive={isMealTypeActive(mealType.id)}
                     className="flex-1"
@@ -71,10 +103,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </SidebarMenuButton>
 
                   <SidebarMenuButton
+                    tooltip="Dodaj nowy tag"
                     onClick={() =>
                       handleAddTagClick(mealType.id, mealType.name)
                     }
-                    tooltip="Add new tag"
                     className="w-auto px-2 shrink-0"
                   >
                     <Plus />

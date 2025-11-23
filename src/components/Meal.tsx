@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { useMarkAsSeen } from "@/hooks/useMarkAsSeen";
 import { MealTagsHoverCard } from "./MealTagsHoverCard";
 import { Sparkles } from "lucide-react";
@@ -12,6 +14,7 @@ interface MealProps {
   new: boolean;
   tagsForMealType: { id: number; tag_name: string }[];
   rating: number | null;
+  onClick?: () => void;
 }
 
 export const Meal: React.FC<MealProps> = ({
@@ -22,50 +25,77 @@ export const Meal: React.FC<MealProps> = ({
   new: isNew,
   tagsForMealType,
   rating,
+  onClick,
 }) => {
-  const markRef = useMarkAsSeen(meal_id, isNew);
+  const [isNewLocal, setIsNewLocal] = useState(isNew);
+  const [animateNewIcon, setAnimateNewIcon] = useState(false);
+
+  const currentUserId = 1; // temporary solution
+  const ref = useMarkAsSeen(currentUserId, meal_id, isNewLocal, () =>
+    setAnimateNewIcon(true)
+  );
 
   return (
     <div
-      ref={markRef}
-      className="relative w-full aspect-3/5 rounded-md shadow-md bg-gray-100"
+      ref={ref}
+      className="relative w-full aspect-3/5  rounded-md shadow-md bg-gray-100 md:min-w-[300px]"
     >
-      {isNew && (
-        <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20">
+      {isNewLocal && (
+        <motion.div
+          initial={{ opacity: 1, scale: 1 }}
+          animate={
+            animateNewIcon
+              ? { opacity: 0, scale: 0.5 }
+              : { opacity: 1, scale: 1 }
+          }
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          onAnimationComplete={() => {
+            if (animateNewIcon) setIsNewLocal(false);
+          }}
+          className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg z-20"
+        >
           <Sparkles size={16} color="white" />
-        </div>
+        </motion.div>
       )}
 
-      {image && (
-        <div className="absolute top-0 left-0 w-full h-full rounded-md overflow-hidden z-0">
-          <img
+      <div
+        className="absolute top-4 right-4 flex gap-2 z-20"
+        onClick={(e) => e.stopPropagation()} // <-- KLUCZOWE
+      >
+        <MealRatingHoverCard meal_id={meal_id} rating={rating} />
+        <MealTagsHoverCard meal_id={meal_id} sidebarTags={tagsForMealType} />
+        <MealHideHoverCard meal_id={meal_id} />
+      </div>
+
+      <div
+        onClick={onClick}
+        className="absolute inset-0 rounded-md overflow-hidden cursor-pointer"
+      >
+        {image && (
+          <motion.img
             src={image}
             alt={name || "Meal"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
-        </div>
-      )}
+        )}
 
-      <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
         {meal_type && (
-          <p className="px-3 py-1 bg-black/60 text-white text-sm font-semibold rounded-md uppercase">
+          <p className="absolute top-4 left-4 px-3 py-1 bg-black/60 text-white text-sm font-semibold rounded-md uppercase z-10">
             {meal_type}
           </p>
         )}
 
-        <div className="flex gap-2">
-          <MealRatingHoverCard meal_id={meal_id} rating={rating} />
-          <MealTagsHoverCard meal_id={meal_id} sidebarTags={tagsForMealType} />
-          <MealHideHoverCard meal_id={meal_id} />
+        <div className="absolute bottom-0 left-0 w-full h-1/3 bg-white/90 flex items-center justify-center p-4 z-10 rounded-b-md">
+          {name && (
+            <h3 className="text-gray-900 text-base font-semibold text-center">
+              {name}
+            </h3>
+          )}
         </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-white/90 flex items-center justify-center p-4 z-10">
-        {name && (
-          <h3 className="text-gray-900 text-base font-semibold text-center">
-            {name}
-          </h3>
-        )}
       </div>
     </div>
   );

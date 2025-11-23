@@ -3,26 +3,30 @@ import { api } from "@/lib/api";
 
 export interface MealTag {
   id: number;
-  meal: { id: number; name: string };
-  tag: { id: number; tag_name: string };
+  tag_name: string;
 }
 
-const fetchMealTags = async (mealId: number) => {
-  const res = await api.get<MealTag[]>(`/meal-tags/${mealId}`);
+const fetchMealTags = async (user_id: number, meal_id: number) => {
+  const res = await api.post<MealTag[]>("/meal-tags/tags-for-meal", {
+    user_id,
+    meal_id,
+  });
+
   return res.data;
 };
 
 export const useMealTags = (
-  mealId: number,
+  user_id: number,
+  meal_id: number,
   options?: Omit<
-    UseQueryOptions<MealTag[], Error, MealTag[], [string, number]>,
-    "queryKey"
+    UseQueryOptions<MealTag[], Error, MealTag[], [string, number, number]>,
+    "queryKey" | "queryFn"
   >
 ) =>
-  useQuery<MealTag[], Error, MealTag[], [string, number]>({
-    queryKey: ["meal-tags", mealId],
-    queryFn: () => fetchMealTags(mealId),
+  useQuery<MealTag[], Error, MealTag[], [string, number, number]>({
+    queryKey: ["meal-tags", user_id, meal_id],
+    queryFn: () => fetchMealTags(user_id, meal_id),
     staleTime: Infinity,
-    enabled: false, // zawsze lazy
+    enabled: false, // lazy load
     ...options,
   });
