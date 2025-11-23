@@ -21,6 +21,8 @@ export const useRecipe = (meal_id?: number) => {
       return response.data;
     },
     enabled: !!meal_id, // query wykona się tylko jeśli meal_id istnieje
+    staleTime: Infinity,
+    gcTime: Infinity,
     retry: false, // nie powtarzamy automatycznie przy błędzie
   });
 
