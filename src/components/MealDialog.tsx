@@ -9,6 +9,7 @@ import type { MealData, MealStatus } from "../types/meals";
 import { MealRating } from "./MealRating";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useRecipe } from "@/hooks/useRecipe";
+import { Spinner } from "./ui/spinner";
 
 interface MealDialogProps {
   isOpen: boolean;
@@ -61,11 +62,20 @@ export const MealDialog: React.FC<MealDialogProps> = ({
             />
             <h2 className="text-3xl font-bold mt-4">{meal.name}</h2>
 
-            {loading && <p className="mt-6 text-lg">Loading...</p>}
+            {loading && (
+              <div className="flex flex-1 justify-center items-center mt-6">
+                <div className="flex items-center gap-2 opacity-80">
+                  <Spinner className="h-6 w-6" />
+                  <span className="text-lg text-gradient-animate">
+                    Generowanie przepisu...
+                  </span>
+                </div>
+              </div>
+            )}
             {error && <p className="mt-6 text-red-500">Błąd: {error}</p>}
 
             {recipe && !loading && (
-              <div className="mt-4">
+              <div className="mt-4 fade-in">
                 <div className="mb-4">
                   <h4 className="font-semibold mb-2 text-lg">Składniki:</h4>
                   <ul className="list-disc list-inside text-base opacity-80">
