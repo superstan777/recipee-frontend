@@ -35,7 +35,7 @@ export const MealDialog: React.FC<MealDialogProps> = ({
         if (!open) onClose();
       }}
     >
-      <DialogContent className="w-[80vw] max-w-[95vw] sm:max-w-[1500px] h-[90vh] p-0 overflow-y-auto rounded-xl border-0">
+      <DialogContent className="overflow-y-auto md:overflow-clip">
         <VisuallyHidden>
           <DialogHeader>
             <DialogTitle>Meal Dialog</DialogTitle>
@@ -44,7 +44,8 @@ export const MealDialog: React.FC<MealDialogProps> = ({
         </VisuallyHidden>
 
         <div className="grid grid-cols-1 md:grid-cols-3 h-full">
-          <div className="flex flex-col">
+          {/* IMAGE */}
+          <div className="flex flex-col h-64 sm:h-auto">
             {meal.image?.url && (
               <img
                 src={meal.image.url}
@@ -54,24 +55,26 @@ export const MealDialog: React.FC<MealDialogProps> = ({
             )}
           </div>
 
-          <div className="flex flex-col p-10 md:col-span-2 overflow-y-auto">
+          {/* DETAILS + RECIPE */}
+          <div className="flex flex-col p-6 sm:p-10 md:col-span-2 md:overflow-y-auto">
             <MealRating
               meal_id={meal.id}
               rating={status.rating}
               starSize={24}
             />
-            <h2 className="text-3xl font-bold mt-4">{meal.name}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mt-4">{meal.name}</h2>
 
             {loading && (
               <div className="flex flex-1 justify-center items-center mt-6">
                 <div className="flex items-center gap-2 opacity-80">
-                  <Spinner className="h-6 w-6" />
-                  <span className="text-lg text-gradient-animate">
+                  <Spinner className="h-6 w-6 shimmer-metal" />
+                  <span className="text-lg shimmer-metal font-semibold">
                     Generowanie przepisu...
                   </span>
                 </div>
               </div>
             )}
+
             {error && <p className="mt-6 text-red-500">Błąd: {error}</p>}
 
             {recipe && !loading && (

@@ -38,7 +38,7 @@ export const Meal: React.FC<MealProps> = ({
   return (
     <div
       ref={ref}
-      className="relative w-full aspect-3/5 rounded-md shadow-md bg-gray-100"
+      className="relative w-full aspect-3/5  rounded-md shadow-md bg-gray-100 md:min-w-[300px]"
     >
       {isNewLocal && (
         <motion.div

@@ -87,7 +87,6 @@ export const MealsList = () => {
     ));
   };
 
-  // --- nowa logika: nie renderujemy dopóki nie mamy meals i statuses ---
   if (isLoading || !statuses)
     return (
       <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -111,7 +110,7 @@ export const MealsList = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 p-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 p-4 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {meals.map((meal: MealData, index: number) => {
           const isLast = index === meals.length - 1;
           const status: MealStatus = statuses[meal.id];
@@ -125,7 +124,7 @@ export const MealsList = () => {
                 image={meal.image?.url || null}
                 tagsForMealType={tagsMap[meal.meal_type] ?? []}
                 onClick={() => setSelectedMeal(meal)}
-                new={status.new} // typ boolean, zawsze dostępny
+                new={status.new}
                 rating={status.rating ?? null}
               />
             </div>
