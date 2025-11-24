@@ -8,7 +8,6 @@ import { api } from "../lib/api";
 interface MealsFilters {
   mealTypeId?: number | null;
   tagId?: number | null;
-  userId: number;
 }
 
 interface MealsRequest extends MealsFilters {
@@ -16,17 +15,20 @@ interface MealsRequest extends MealsFilters {
   cursor?: number | null;
 }
 
-const fetchMeals = async (
-  cursor: number | null,
-  filters: MealsFilters
-): Promise<MealsPage> => {
+const fetchMeals = async ({
+  cursor,
+  filters,
+}: {
+  cursor: number | null;
+  filters: MealsFilters;
+}): Promise<MealsPage> => {
   const body: MealsRequest = {
     ...filters,
     limit: 30,
     ...(cursor !== null ? { cursor } : {}),
   };
 
-  const response = await api.post<MealsPage>("/meals/meals", body);
+  const response = await api.post<MealsPage>("/meals", body);
   return response.data;
 };
 
@@ -42,7 +44,7 @@ export const useMeals = (filters: MealsFilters) => {
     queryFn: ({
       pageParam,
     }: QueryFunctionContext<["meals", MealsFilters], number | null>) =>
-      fetchMeals(pageParam ?? null, filters),
+      fetchMeals({ cursor: pageParam ?? null, filters }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });

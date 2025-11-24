@@ -53,7 +53,6 @@ export const MealsList = () => {
   } = useMeals({
     mealTypeId: selectedMealTypeId,
     tagId: selectedTagId,
-    userId: currentUserId,
   });
 
   const meals =
