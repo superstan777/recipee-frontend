@@ -28,9 +28,6 @@ interface TagDialogProps {
   mealTypeName: string | null;
 }
 
-// temp solution
-const currentUserId = 1;
-
 export const TagDialog = ({
   open,
   onOpenChange,
@@ -54,7 +51,6 @@ export const TagDialog = ({
 
     mutate(
       {
-        user_id: currentUserId,
         meal_type_id: mealTypeId,
         tag_name: values.tag_name,
       },
