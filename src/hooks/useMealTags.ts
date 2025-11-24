@@ -6,9 +6,8 @@ export interface MealTag {
   tag_name: string;
 }
 
-const fetchMealTags = async (user_id: number, meal_id: number) => {
+const fetchMealTags = async (meal_id: number) => {
   const res = await api.post<MealTag[]>("/meal-tags/tags-for-meal", {
-    user_id,
     meal_id,
   });
 
@@ -16,16 +15,15 @@ const fetchMealTags = async (user_id: number, meal_id: number) => {
 };
 
 export const useMealTags = (
-  user_id: number,
   meal_id: number,
   options?: Omit<
-    UseQueryOptions<MealTag[], Error, MealTag[], [string, number, number]>,
+    UseQueryOptions<MealTag[], Error, MealTag[], [string, number]>,
     "queryKey" | "queryFn"
   >
 ) =>
-  useQuery<MealTag[], Error, MealTag[], [string, number, number]>({
-    queryKey: ["meal-tags", user_id, meal_id],
-    queryFn: () => fetchMealTags(user_id, meal_id),
+  useQuery<MealTag[], Error, MealTag[], [string, number]>({
+    queryKey: ["meal-tags", meal_id],
+    queryFn: () => fetchMealTags(meal_id),
     staleTime: Infinity,
     enabled: false, // lazy load
     ...options,

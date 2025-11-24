@@ -8,9 +8,8 @@ import { useFiltersStore } from "@/store/filters";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 
 export function MobileSidebarMenu() {
-  const currentUserId = 1;
   const [open, setOpen] = useState(false);
-  const { data: sidebarData, isLoading, isError } = useSidebar(currentUserId);
+  const { data: sidebarData, isLoading, isError } = useSidebar();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMealTypeId, setDialogMealTypeId] = useState<number | null>(null);

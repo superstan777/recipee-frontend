@@ -22,15 +22,10 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
   meal_id,
   sidebarTags,
 }) => {
-  const currentUser = 1;
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
 
-  const {
-    data: mealTags,
-    isLoading,
-    refetch,
-  } = useMealTags(currentUser, meal_id);
+  const { data: mealTags, isLoading, refetch } = useMealTags(meal_id);
 
   const addMealTag = useAddMealTag();
   const removeMealTag = useRemoveMealTag();
@@ -46,7 +41,7 @@ export const MealTagsHoverCard: React.FC<MealTagsHoverCardProps> = ({
     const mutation = isSelected ? removeMealTag : addMealTag;
 
     mutation.mutate(
-      { user_id: currentUser, meal_id, tag_id: tagId },
+      { meal_id, tag_id: tagId },
       {
         onSettled: () => {
           // zamiast invalidateQueries -> wywołujemy refetch ręcznie
