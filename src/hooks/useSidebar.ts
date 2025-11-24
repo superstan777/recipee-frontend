@@ -12,16 +12,15 @@ export interface SidebarMealType {
   tags: SidebarTag[];
 }
 
-const fetchSidebar = async (user_id: number): Promise<SidebarMealType[]> => {
-  const res = await api.post<SidebarMealType[]>("/sidebar", { user_id });
+const fetchSidebar = async (): Promise<SidebarMealType[]> => {
+  const res = await api.post<SidebarMealType[]>("/sidebar");
   return res.data;
 };
 
-export const useSidebar = (user_id: number) => {
+export const useSidebar = () => {
   return useQuery({
-    queryKey: ["sidebar", user_id],
-    queryFn: () => fetchSidebar(user_id),
+    queryKey: ["sidebar"],
+    queryFn: fetchSidebar,
     staleTime: Infinity,
-    enabled: !!user_id,
   });
 };

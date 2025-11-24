@@ -9,12 +9,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useHideMeal } from "@/hooks/useHideMeal";
 
 interface MealHideHoverCardProps {
-  user_id?: number; // opcjonalnie, default 1
   meal_id: number;
 }
 
 export const MealHideHoverCard: React.FC<MealHideHoverCardProps> = ({
-  user_id = 1,
   meal_id,
 }) => {
   const isMobile = useIsMobile();
@@ -27,7 +25,7 @@ export const MealHideHoverCard: React.FC<MealHideHoverCardProps> = ({
   };
 
   const handleHide = () => {
-    hideMeal.mutate({ user_id, meal_id });
+    hideMeal.mutate({ meal_id });
     setOpen(false);
   };
 

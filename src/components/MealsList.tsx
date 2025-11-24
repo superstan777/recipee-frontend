@@ -12,7 +12,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MealDialog } from "./MealDialog";
 
 export const MealsList = () => {
-  const currentUserId = 1; // temp solution
   const observerRef = useRef<IntersectionObserver | null>(null);
   const queryClient = useQueryClient();
   const [selectedMeal, setSelectedMeal] = useState<MealData | null>(null);
@@ -22,7 +21,7 @@ export const MealsList = () => {
   );
   const selectedTagId = useFiltersStore((state) => state.selectedTagId);
 
-  const { data: sidebar } = useSidebar(currentUserId);
+  const { data: sidebar } = useSidebar();
 
   const tagsMap = useMemo(() => {
     const map: Record<string, SidebarTag[]> = {};
@@ -53,7 +52,6 @@ export const MealsList = () => {
   } = useMeals({
     mealTypeId: selectedMealTypeId,
     tagId: selectedTagId,
-    userId: currentUserId,
   });
 
   const meals =
@@ -61,7 +59,7 @@ export const MealsList = () => {
       (page: MealsPage) => page.data
     ) ?? [];
 
-  const { data: statuses } = useMealStatuses(meals, currentUserId);
+  const { data: statuses } = useMealStatuses(meals);
 
   const lastMealRef = useCallback(
     (node: HTMLDivElement | null) => {

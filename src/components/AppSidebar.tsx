@@ -21,8 +21,7 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const userId = 1; // temp solution
-  const { data: sidebarData, isLoading, isError } = useSidebar(userId);
+  const { data: sidebarData, isLoading, isError } = useSidebar();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMealTypeId, setDialogMealTypeId] = useState<number | null>(null);

@@ -2,14 +2,11 @@ import { useEffect, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
-const markAsSeen = async (user_id: number, meal_id: number) => {
-  return api
-    .patch(`/meal-statuses/${meal_id}/seen`, { user_id })
-    .then((r) => r.data);
+const markAsSeen = async (meal_id: number) => {
+  return api.patch(`/meal-statuses/${meal_id}/seen`).then((r) => r.data);
 };
 
 export function useMarkAsSeen(
-  user_id: number,
   meal_id: number,
   isNew: boolean,
   onSeen: () => void
@@ -18,7 +15,7 @@ export function useMarkAsSeen(
   const hasTriggered = useRef(false);
 
   const mutation = useMutation({
-    mutationFn: () => markAsSeen(user_id, meal_id),
+    mutationFn: () => markAsSeen(meal_id),
     onError: (err) => console.error("markAsSeen error:", err),
   });
 
@@ -42,7 +39,7 @@ export function useMarkAsSeen(
     observer.observe(ref.current);
 
     return () => observer.disconnect();
-  }, [isNew, user_id, mutation, onSeen]);
+  }, [isNew, mutation, onSeen]);
 
   return ref;
 }
