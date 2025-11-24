@@ -14,11 +14,9 @@ export const MealRating: React.FC<MealRatingProps> = ({
 }) => {
   const rateMeal = useRateMeal();
 
-  const currentUserId = 1; // temporary solution
-
   const handleRate = (value: number) => {
     const newRating = rating === value ? null : value;
-    rateMeal.mutate({ user_id: currentUserId, meal_id, rating: newRating });
+    rateMeal.mutate({ meal_id, rating: newRating });
   };
 
   return (

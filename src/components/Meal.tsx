@@ -30,10 +30,7 @@ export const Meal: React.FC<MealProps> = ({
   const [isNewLocal, setIsNewLocal] = useState(isNew);
   const [animateNewIcon, setAnimateNewIcon] = useState(false);
 
-  const currentUserId = 1; // temporary solution
-  const ref = useMarkAsSeen(currentUserId, meal_id, isNewLocal, () =>
-    setAnimateNewIcon(true)
-  );
+  const ref = useMarkAsSeen(meal_id, isNewLocal, () => setAnimateNewIcon(true));
 
   return (
     <div
