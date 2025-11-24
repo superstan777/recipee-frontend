@@ -16,9 +16,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLogin } from "../hooks/useLogin";
 
 const loginSchema = z.object({
-  email: z.email({ message: "Nieprawidłowy adres email" }),
+  email: z.string().email({ message: "Nieprawidłowy adres email" }),
   password: z.string().min(1, { message: "Hasło jest wymagane" }),
 });
 
@@ -35,9 +36,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     },
   });
 
+  const loginMutation = useLogin();
+
   const onSubmit = (values: LoginFormValues) => {
-    console.log("Form values:", values);
-    // Tutaj możesz dodać wywołanie API do logowania
+    loginMutation.mutate(values);
   };
 
   return (
@@ -90,7 +92,15 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           )}
         />
 
-        <Button type="submit">Zaloguj się</Button>
+        <Button type="submit" disabled={loginMutation.isPending}>
+          {loginMutation.isPending ? "Logowanie..." : "Zaloguj się"}
+        </Button>
+
+        {loginMutation.status === "error" && (
+          <p className="text-left text-red-500 mt-2">
+            {loginMutation.error?.message || "Błąd logowania"}
+          </p>
+        )}
 
         <div className="text-center text-sm text-muted-foreground">
           Nie masz konta?{" "}
