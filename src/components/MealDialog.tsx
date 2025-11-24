@@ -35,7 +35,12 @@ export const MealDialog: React.FC<MealDialogProps> = ({
         if (!open) onClose();
       }}
     >
-      <DialogContent className="overflow-y-auto md:overflow-clip">
+      <DialogContent
+        className="overflow-y-auto 
+      w-screen h-screen p-0 rounded-none
+      md:top-1/2 md:left-1/2 md:w-[80vw] md:h-[90vh] md:max-w-[1500px] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-xl
+      "
+      >
         <VisuallyHidden>
           <DialogHeader>
             <DialogTitle>Meal Dialog</DialogTitle>
