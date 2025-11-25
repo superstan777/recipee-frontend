@@ -4,7 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { MobileSidebarMenu } from "./components/MobileMenu";
 import React from "react";
-import { useIsMobile } from "./hooks/use-mobile";
+import { useIsMobile } from "./hooks/useBreakpoints";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import { Spinner } from "./components/ui/spinner";
 

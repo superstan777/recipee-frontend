@@ -2,14 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import type { AxiosError } from "axios";
 
-interface LoginData {
+interface SignupData {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
-  token: string;
-  userId: number;
+interface SignupResponse {
+  message: string;
 }
 
 interface BackendError {
@@ -18,16 +17,16 @@ interface BackendError {
   statusCode?: number;
 }
 
-export const useLogin = () => {
+export const useSignup = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<
-    LoginResponse,
+    SignupResponse,
     AxiosError<BackendError>,
-    LoginData
+    SignupData
   >({
     mutationFn: async (data) => {
-      const response = await api.post<LoginResponse>("/auth/login", data, {
+      const response = await api.post<SignupResponse>("/auth/signup", data, {
         withCredentials: true,
       });
       return response.data;
@@ -43,14 +42,11 @@ export const useLogin = () => {
     const msg = mutation.error.response.data.message;
 
     switch (msg) {
-      case "Invalid email or password":
-        errorMessage = "Nieprawidłowy email lub hasło";
-        break;
-      case "User not found":
-        errorMessage = "Nie znaleziono użytkownika";
+      case "User already exists":
+        errorMessage = "Użytkownik z tym emailem już istnieje";
         break;
       default:
-        errorMessage = "Wystąpił błąd logowania";
+        errorMessage = "Wystąpił błąd podczas rejestracji";
     }
   }
 

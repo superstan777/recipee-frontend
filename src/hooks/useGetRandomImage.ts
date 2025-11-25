@@ -7,22 +7,23 @@ export interface Image {
   title?: string;
 }
 
-export const useGetRandomImage = () => {
+export const useGetRandomImage = (enabled: boolean = true) => {
   const query = useQuery<Image, Error>({
     queryKey: ["random-image"],
     queryFn: async () => {
       const response = await api.get<Image>("/images/random");
       return response.data;
     },
-    staleTime: Infinity, // nie odświeżaj automatycznie
-    gcTime: Infinity, // nie wyrzucaj z cache
-    retry: false, // bez retry
+    enabled, // <-- KLUCZOWE
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
   });
 
   return {
     image: query.data ?? null,
     loading: query.isFetching,
     error: query.error?.message ?? null,
-    refetch: query.refetch, // możesz ręcznie wymusić losowanie kolejnego
+    refetch: query.refetch,
   };
 };

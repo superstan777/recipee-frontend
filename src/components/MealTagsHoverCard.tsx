@@ -11,7 +11,7 @@ import { Label } from "./ui/label";
 import { useMealTags } from "@/hooks/useMealTags";
 import { useAddMealTag } from "@/hooks/useAddMealTag";
 import { useRemoveMealTag } from "@/hooks/useRemoveMealTag";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/useBreakpoints";
 
 interface MealTagsHoverCardProps {
   meal_id: number;

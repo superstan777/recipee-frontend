@@ -5,8 +5,9 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 import { Star } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+
 import { MealRating } from "./MealRating";
+import { useIsMobile } from "@/hooks/useBreakpoints";
 
 interface MealRatingHoverCardProps {
   meal_id: number;

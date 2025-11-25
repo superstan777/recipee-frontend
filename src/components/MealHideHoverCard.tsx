@@ -5,7 +5,7 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 import { Trash2 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/useBreakpoints";
 import { useHideMeal } from "@/hooks/useHideMeal";
 
 interface MealHideHoverCardProps {
