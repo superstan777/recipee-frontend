@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { useLogin } from "../hooks/useLogin";
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Nieprawidłowy adres email" }),
+  email: z.email({ message: "Nieprawidłowy adres email" }),
   password: z.string().min(1, { message: "Hasło jest wymagane" }),
 });
 
@@ -97,9 +97,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         </Button>
 
         {loginMutation.status === "error" && (
-          <p className="text-left text-red-500 mt-2">
-            {loginMutation.error?.message || "Błąd logowania"}
-          </p>
+          <p className="text-left text-red-500">{loginMutation.errorMessage}</p>
         )}
 
         <div className="text-center text-sm text-muted-foreground">
