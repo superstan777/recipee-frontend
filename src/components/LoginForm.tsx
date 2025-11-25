@@ -17,17 +17,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "../hooks/useLogin";
+import { useSignup } from "../hooks/useSignup";
 
 const loginSchema = z.object({
   email: z.email({ message: "Nieprawidłowy adres email" }),
-  password: z.string().min(1, { message: "Hasło jest wymagane" }),
+  password: z.string().min(6, { message: "Hasło jest wymagane" }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-interface LoginFormProps extends React.HTMLAttributes<HTMLFormElement> {}
+interface LoginFormProps extends React.HTMLAttributes<HTMLFormElement> {
+  signup?: boolean;
+  onToggleMode?: () => void;
+}
 
-export function LoginForm({ className, ...props }: LoginFormProps) {
+export function LoginForm({
+  className,
+  signup = false,
+  onToggleMode,
+  ...props
+}: LoginFormProps) {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,10 +45,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     },
   });
 
-  const loginMutation = useLogin();
+  const mutation = signup ? useSignup() : useLogin();
 
   const onSubmit = (values: LoginFormValues) => {
-    loginMutation.mutate(values);
+    mutation.mutate(values);
   };
 
   return (
@@ -50,9 +59,13 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         {...props}
       >
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Zaloguj się</h1>
+          <h1 className="text-2xl font-bold">
+            {signup ? "Zarejestruj się" : "Zaloguj się"}
+          </h1>
           <p className="text-muted-foreground text-sm">
-            Wprowadź swoje dane, aby zalogować się do konta
+            {signup
+              ? "Wprowadź swoje dane, aby utworzyć konto"
+              : "Wprowadź swoje dane, aby zalogować się do konta"}
           </p>
         </div>
 
@@ -77,12 +90,14 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
             <FormItem className="text-left">
               <div className="flex items-center justify-between">
                 <FormLabel>Hasło</FormLabel>
-                <a
-                  href="#"
-                  className="text-sm underline-offset-4 hover:underline"
-                >
-                  Zapomniałeś hasła?
-                </a>
+                {!signup && (
+                  <a
+                    href="#"
+                    className="text-sm underline-offset-4 hover:underline"
+                  >
+                    Zapomniałeś hasła?
+                  </a>
+                )}
               </div>
               <FormControl>
                 <Input type="password" {...field} />
@@ -92,19 +107,30 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           )}
         />
 
-        <Button type="submit" disabled={loginMutation.isPending}>
-          {loginMutation.isPending ? "Logowanie..." : "Zaloguj się"}
+        <Button type="submit" disabled={mutation.isPending}>
+          {mutation.isPending
+            ? signup
+              ? "Rejestrowanie..."
+              : "Logowanie..."
+            : signup
+            ? "Zarejestruj się"
+            : "Zaloguj się"}
         </Button>
 
-        {loginMutation.status === "error" && (
-          <p className="text-left text-red-500">{loginMutation.errorMessage}</p>
+        {mutation.status === "error" && (
+          <p className="text-left text-red-500 mt-2">{mutation.errorMessage}</p>
         )}
 
         <div className="text-center text-sm text-muted-foreground">
-          Nie masz konta?{" "}
-          <a href="#" className="underline underline-offset-4">
-            Zarejestruj się
-          </a>
+          {signup ? "Masz już konto?" : "Nie masz konta?"}{" "}
+          <Button
+            type="button"
+            className="underline underline-offset-4 p-0 text-sm text-muted-foreground"
+            variant="link"
+            onClick={onToggleMode}
+          >
+            {signup ? "Zaloguj się" : "Zarejestruj się"}
+          </Button>
         </div>
       </form>
     </Form>

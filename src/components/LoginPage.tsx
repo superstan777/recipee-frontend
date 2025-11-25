@@ -1,19 +1,18 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { LoginForm } from "./LoginForm";
 import { useGetRandomImage } from "../hooks/useGetRandomImage";
-import { useState, useEffect } from "react";
-
 import { useIsSmallScreen } from "@/hooks/useBreakpoints";
 
 export default function LoginPage() {
   const isSmallScreen = useIsSmallScreen();
+  const [isSignup, setIsSignup] = useState(false);
 
   // nie odpalamy query dopóki nie znamy rozmiaru
   const enableImageFetch = isSmallScreen === false;
 
-  // const { image, loading, error } = useGetRandomImage(enableImageFetch);
   const { image, error } = useGetRandomImage(enableImageFetch);
-  // jezeli error to wyswietlamy form na srodku
-
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
@@ -42,7 +41,10 @@ export default function LoginPage() {
 
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            <LoginForm
+              signup={isSignup}
+              onToggleMode={() => setIsSignup((prev) => !prev)}
+            />
           </div>
         </div>
       </div>
