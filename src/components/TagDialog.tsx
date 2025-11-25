@@ -96,7 +96,7 @@ export const TagDialog = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="grid gap-2"
+            className="grid gap-4"
           >
             <FormField
               control={form.control}
