@@ -10,23 +10,15 @@ export default function LoginPage() {
   // nie odpalamy query dopóki nie znamy rozmiaru
   const enableImageFetch = isSmallScreen === false;
 
-  const { image, loading, error } = useGetRandomImage(enableImageFetch);
+  // const { image, loading, error } = useGetRandomImage(enableImageFetch);
+  const { image, error } = useGetRandomImage(enableImageFetch);
+  // jezeli error to wyswietlamy form na srodku
 
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     setImageLoaded(false);
   }, [image?.url]);
-
-  // podczas pierwszej milisekundy (isMobile === null)
-  // nie renderujemy prawej kolumny i nie odpalamy query
-  if (isSmallScreen === null) {
-    return (
-      <div className="flex items-center justify-center min-h-svh">
-        Ładowanie interfejsu...
-      </div>
-    );
-  }
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -58,12 +50,6 @@ export default function LoginPage() {
       {/* PRAWA KOLUMNA – tylko desktop */}
       {!isSmallScreen && (
         <div className="bg-white relative hidden lg:block overflow-hidden">
-          {loading && (
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              Ładowanie zdjęcia...
-            </div>
-          )}
-
           {error && (
             <div className="absolute inset-0 flex items-center justify-center text-red-500">
               Błąd ładowania zdjęcia
